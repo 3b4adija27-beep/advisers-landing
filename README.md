@@ -1,19 +1,35 @@
 # ADVISERS PERU Web v0.1.5
 
-Web publica oficial de ADVISERS PERU, basada en `advisers-web-v0.1.5`, para presentar servicios, metodologia, arquitectura y proyectos, y captar solicitudes de diagnostico digital.
+Web pública oficial de ADVISERS PERU para presentar servicios, metodología, arquitectura y proyectos, y captar solicitudes de diagnóstico digital.
 
-El formulario envia los datos directamente al webhook productivo de n8n:
+## Identidad visual
+
+La landing utiliza como identidad oficial:
+
+- Logo institucional actualmente validado e incrustado en `index.html`.
+- Azul corporativo oscuro para estructura y navegación.
+- Teal tecnológico para acentos, estados y elementos de apoyo.
+- Blanco y gris claro para superficies y legibilidad.
+- Azul de acción para botones y llamados principales.
+
+El logo se muestra al doble de su tamaño anterior en escritorio, conservando proporción, nitidez y adaptación responsive.
+
+Las referencias comerciales de la plataforma operativa se presentan como `P-O / ADKPAX`:
+
+> Gestión de activos, tickets de recorrido, consumo de combustible, IRA, dashboards, alertas, usuarios y auditoría.
+
+El formulario envía los datos directamente al webhook productivo de n8n:
 
 ```text
 POST https://n8n-n8n.sdb2lb.easypanel.host/webhook/lead-landing
 Content-Type: application/json
 ```
 
-El sitio no incluye backend, base de datos, credenciales, tokens ni conexion directa con ADVISERS IA OS. El logo y la imagen principal estan incrustados en `index.html` para que el contenedor estatico no dependa de archivos adicionales.
+El sitio no incluye backend, base de datos, credenciales, tokens ni conexión directa con ADVISERS IA OS. El logo y la imagen principal están incrustados en `index.html` para que el contenedor estático no dependa de archivos adicionales.
 
-## Ejecucion local
+## Ejecución local
 
-Para probar el sitio y el formulario en condiciones similares a produccion:
+Para probar el sitio y el formulario en condiciones similares a producción:
 
 ```bash
 docker build -t advisers-landing .
@@ -51,9 +67,9 @@ No se requieren variables de entorno.
 
 1. Abre la landing desplegada.
 2. Completa nombre, empresa, problema y al menos WhatsApp o correo.
-3. Marca la autorizacion de contacto.
-4. Presiona **Registrar solicitud demo**.
-5. Verifica el mensaje de confirmacion en pantalla.
-6. En n8n, confirma una ejecucion exitosa de `WF-LEAD-LANDING` y revisa el JSON recibido.
+3. Marca la autorización de contacto.
+4. Presiona **Registrar solicitud**.
+5. Verifica el mensaje de confirmación en pantalla.
+6. En n8n, confirma una ejecución exitosa de `WF-LEAD-LANDING` y revisa el JSON recibido.
 
-El boton queda deshabilitado mientras se procesa la solicitud para evitar envios duplicados. El boton de WhatsApp funciona de forma independiente.
+El botón queda deshabilitado mientras se procesa la solicitud para evitar envíos duplicados. El botón de WhatsApp funciona de forma independiente.
