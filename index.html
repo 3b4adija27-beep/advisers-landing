@@ -967,9 +967,9 @@
                 <option value="">Seleccionar</option>
                 <option>Bot WhatsApp / Web</option>
                 <option>CRM y tickets</option>
-                <option>Automatizacion con n8n</option>
+                <option value="Automatización con n8n">Automatización con n8n</option>
                 <option>Sistema interno</option>
-                <option>Diagnostico de transformacion digital</option>
+                <option value="Diagnóstico de transformación digital">Diagnóstico de transformación digital</option>
               </select>
             </div>
             <div class="field">
@@ -1046,6 +1046,7 @@
     const form = document.getElementById('leadForm');
     const formMessage = document.getElementById('formMessage');
     const submitButton = document.getElementById('leadSubmit');
+    const consentCheckbox = form.elements.namedItem('acepta_contacto');
     const webhookUrl = 'https://n8n-n8n.sdb2lb.easypanel.host/webhook/lead-landing';
 
     function addBubble(text, isUser) {
@@ -1089,18 +1090,25 @@
       formMessage.style.display = 'block';
     }
 
+    function cleanFormValue(value) {
+      return String(value || '')
+        .trim()
+        .replace(/^(?:=\s*)?[`'"]+/, '')
+        .trim();
+    }
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const data = new FormData(form);
       const payload = {
-        nombre: String(data.get('nombre') || '').trim(),
-        empresa: String(data.get('empresa') || '').trim(),
-        whatsapp: String(data.get('whatsapp') || '').trim(),
-        correo: String(data.get('correo') || '').trim(),
-        servicio_interes: String(data.get('servicio_interes') || '').trim(),
-        urgencia: String(data.get('urgencia') || '').trim(),
-        problema: String(data.get('problema') || '').trim(),
-        acepta_contacto: data.get('acepta_contacto') === 'on'
+        nombre: cleanFormValue(data.get('nombre')),
+        empresa: cleanFormValue(data.get('empresa')),
+        whatsapp: cleanFormValue(data.get('whatsapp')),
+        correo: cleanFormValue(data.get('correo')),
+        servicio_interes: cleanFormValue(data.get('servicio_interes')),
+        urgencia: cleanFormValue(data.get('urgencia')),
+        problema: cleanFormValue(data.get('problema')),
+        acepta_contacto: consentCheckbox instanceof HTMLInputElement && consentCheckbox.checked
       };
 
       if (!payload.nombre || !payload.empresa || (!payload.whatsapp && !payload.correo) || !payload.problema || !payload.acepta_contacto) {
