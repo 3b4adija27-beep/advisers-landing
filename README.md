@@ -1,6 +1,6 @@
-# ADVISERS PERU Landing
+# ADVISERS PERU Web v0.1.5
 
-Landing publica estatica de ADVISERS PERU para presentar servicios y captar solicitudes de diagnostico digital.
+Web publica oficial de ADVISERS PERU, basada en `advisers-web-v0.1.5`, para presentar servicios, metodologia, arquitectura y proyectos, y captar solicitudes de diagnostico digital.
 
 El formulario envia los datos directamente al webhook productivo de n8n:
 
@@ -9,11 +9,11 @@ POST https://n8n-n8n.sdb2lb.easypanel.host/webhook/lead-landing
 Content-Type: application/json
 ```
 
-La landing no incluye backend, base de datos, credenciales, tokens ni conexion directa con ADVISERS IA OS.
+El sitio no incluye backend, base de datos, credenciales, tokens ni conexion directa con ADVISERS IA OS. El logo y la imagen principal estan incrustados en `index.html` para que el contenedor estatico no dependa de archivos adicionales.
 
 ## Ejecucion local
 
-Puedes abrir `index.html` directamente en el navegador. Para probar el formulario en condiciones similares a produccion, es preferible servir la carpeta mediante un servidor HTTP local:
+Para probar el sitio y el formulario en condiciones similares a produccion:
 
 ```bash
 docker build -t advisers-landing .
@@ -26,7 +26,7 @@ Luego visita:
 http://localhost:8080
 ```
 
-El workflow `WF-LEAD-LANDING` debe estar activo en n8n. El webhook tambien debe permitir solicitudes CORS desde el dominio donde se publique la landing.
+El workflow `WF-LEAD-LANDING` debe estar activo en n8n. El webhook debe permitir solicitudes CORS desde el dominio donde se publique el sitio.
 
 ## Despliegue en EasyPanel
 
