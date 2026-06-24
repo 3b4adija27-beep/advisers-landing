@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ADVISERS PERU | Automatizacion empresarial e IA aplicada</title>
+  <meta name="description" content="ADVISERS PERU automatiza procesos, atencion y ventas para PyMEs con bots, CRM, tickets, n8n e IA aplicada.">
+  <style>
+    :root {
+      --navy: #0b2545;
+      --blue: #0b75d1;
+      --blue-soft: #eaf4ff;
+      --ink: #2f3a45;
+      --muted: #64748b;
+      --line: #dbe4ee;
+      --paper: #ffffff;
+      --surface: #f5f7fa;
+      --green: #25d366;
+      --green-dark: #128c4a;
+      --amber: #f59e0b;
+      --red: #dc2626;
+      --shadow: 0 18px 55px rgba(11, 37, 69, 0.16);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; color: var(--ink); font-family: Arial, Helvetica, sans-serif; background: var(--surface); line-height: 1.5; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    .topbar { position: sticky; top: 0; z-index: 30; background: rgba(255, 255, 255, 0.95); border-bottom: 1px solid rgba(219, 228, 238, 0.9); backdrop-filter: blur(16px); }
+    .nav { width: min(1180px, calc(100% - 32px)); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; min-height: 76px; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-mark { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 8px; color: #fff; font-weight: 800; letter-spacing: 0; background: linear-gradient(135deg, rgba(11, 117, 209, 0.95), rgba(11, 37, 69, 1)); box-shadow: 0 10px 22px rgba(11, 37, 69, 0.22); }
+    .brand-text strong { display: block; color: var(--navy); font-size: 16px; line-height: 1.1; }
+    .brand-text span { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .nav-links { display: flex; align-items: center; gap: 20px; color: var(--ink); font-size: 14px; white-space: nowrap; }
+    .nav-links a:hover { color: var(--blue); }
+    .nav-actions { display: flex; gap: 10px; align-items: center; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 0 16px; border-radius: 8px; border: 1px solid transparent; font-weight: 700; font-size: 14px; cursor: pointer; transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease; }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 24px rgba(11, 37, 69, 0.16); }
+    .btn-primary { color: #fff; background: var(--blue); }
+    .btn-outline { color: var(--navy); background: #fff; border-color: var(--line); }
+    .btn-whatsapp { color: #fff; background: var(--green-dark); }
+    .hero { min-height: 88vh; display: grid; align-items: center; position: relative; color: #fff; background: linear-gradient(90deg, rgba(11, 37, 69, 0.93) 0%, rgba(11, 37, 69, 0.84) 42%, rgba(11, 37, 69, 0.34) 100%), url("advisers-assets/automation-hub.png") center / cover no-repeat; }
+    .hero-inner { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 82px 0 72px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: #d9f99d; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
+    .eyebrow::before { content: ""; width: 9px; height: 9px; border-radius: 999px; background: var(--green); }
+    h1 { max-width: 780px; margin: 0; font-size: clamp(44px, 7vw, 88px); line-height: 0.98; letter-spacing: 0; }
+    .hero-copy { max-width: 680px; margin: 22px 0 0; color: #e2edf7; font-size: 20px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+    .hero-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: min(720px, 100%); gap: 12px; margin-top: 42px; }
+    .metric { border-left: 3px solid rgba(56, 189, 248, 0.9); padding: 8px 12px; background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(8px); }
+    .metric strong { display: block; color: #fff; font-size: 22px; line-height: 1.1; }
+    .metric span { display: block; color: #cfe8ff; font-size: 13px; margin-top: 4px; }
+    section { padding: 72px 0; background: var(--paper); }
+    section.alt { background: var(--surface); }
+    .wrap { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .section-head { max-width: 760px; margin-bottom: 32px; }
+    .section-head h2 { margin: 0; color: var(--navy); font-size: clamp(28px, 4vw, 44px); line-height: 1.08; letter-spacing: 0; }
+    .section-head p { margin: 14px 0 0; color: var(--muted); font-size: 17px; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+    .card { min-height: 174px; padding: 22px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+    .card h3 { margin: 0; color: var(--navy); font-size: 20px; line-height: 1.2; }
+    .card p { margin: 10px 0 0; color: var(--muted); font-size: 15px; }
+    .tag { display: inline-flex; margin-bottom: 14px; min-width: 34px; height: 34px; align-items: center; justify-content: center; border-radius: 8px; color: var(--navy); background: var(--blue-soft); font-weight: 800; font-size: 13px; }
+    .split { display: grid; grid-template-columns: 0.92fr 1.08fr; gap: 44px; align-items: start; }
+    .problem-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+    .problem-list li { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: start; padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+    .check { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 6px; color: #fff; background: var(--green-dark); font-weight: 900; font-size: 14px; }
+    .process { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; counter-reset: step; }
+    .step { min-height: 124px; padding: 16px 12px; border: 1px solid var(--line); border-radius: 8px; background: #fff; counter-increment: step; }
+    .step::before { content: counter(step); display: grid; place-items: center; width: 28px; height: 28px; margin-bottom: 12px; border-radius: 7px; color: #fff; background: var(--blue); font-weight: 800; font-size: 13px; }
+    .step strong { color: var(--navy); font-size: 14px; line-height: 1.2; }
+    .projects { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+    .project { border: 1px solid var(--line); border-radius: 8px; padding: 22px; background: #fff; }
+    .status { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px; color: var(--green-dark); font-weight: 800; font-size: 13px; }
+    .status::before { content: ""; width: 8px; height: 8px; border-radius: 999px; background: currentColor; }
+    .project h3 { margin: 0; color: var(--navy); }
+    .project p { margin: 12px 0 0; color: var(--muted); }
+    .diagnostic { display: grid; grid-template-columns: 0.92fr 1.08fr; gap: 28px; align-items: stretch; }
+    .form-panel, .contact-panel { border: 1px solid var(--line); border-radius: 8px; background: #fff; box-shadow: var(--shadow); }
+    .form-panel { padding: 24px; }
+    .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .field { display: grid; gap: 7px; }
+    .field.full { grid-column: 1 / -1; }
+    label { color: var(--navy); font-weight: 800; font-size: 13px; }
+    input, select, textarea { width: 100%; min-height: 44px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px; font: inherit; color: var(--ink); background: #fff; }
+    textarea { min-height: 108px; resize: vertical; }
+    input:focus, select:focus, textarea:focus { outline: 3px solid rgba(11, 117, 209, 0.16); border-color: var(--blue); }
+    .consent { display: grid; grid-template-columns: 20px 1fr; align-items: start; gap: 10px; margin: 16px 0 18px; color: var(--muted); font-size: 13px; }
+    .consent input { min-height: auto; margin-top: 3px; }
+    .form-message { display: none; margin-top: 14px; padding: 12px 14px; border-radius: 8px; background: #dcfce7; color: #14532d; font-weight: 700; }
+    .form-message.error { background: #fee2e2; color: #991b1b; }
+    .form-message.info { background: #e0f2fe; color: #075985; }
+    .form-panel button[disabled] { cursor: wait; opacity: 0.7; }
+    .contact-panel { padding: 28px; color: #fff; background: linear-gradient(145deg, rgba(11, 37, 69, 0.96), rgba(11, 117, 209, 0.86)), url("advisers-assets/automation-hub.png") center / cover no-repeat; overflow: hidden; }
+    .contact-panel h3 { margin: 0; font-size: 28px; line-height: 1.1; }
+    .contact-panel p { color: #dbeafe; margin: 12px 0 24px; }
+    .contact-list { display: grid; gap: 12px; margin: 0 0 26px; padding: 0; list-style: none; }
+    .contact-list li { padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.16); }
+    .privacy { color: #dbeafe; font-size: 12px; }
+    footer { padding: 34px 0; color: #cbd5e1; background: var(--navy); }
+    .foot { width: min(1180px, calc(100% - 32px)); margin: 0 auto; display: flex; justify-content: space-between; gap: 16px; align-items: center; flex-wrap: wrap; font-size: 13px; }
+    .chat-launch { position: fixed; right: 22px; bottom: 22px; z-index: 40; width: 58px; height: 58px; border: 0; border-radius: 999px; color: #fff; background: var(--green-dark); box-shadow: 0 18px 40px rgba(18, 140, 74, 0.32); cursor: pointer; font-size: 24px; font-weight: 900; }
+    .chat { position: fixed; right: 22px; bottom: 92px; z-index: 41; width: min(372px, calc(100vw - 28px)); border: 1px solid var(--line); border-radius: 8px; background: #fff; box-shadow: var(--shadow); overflow: hidden; display: none; }
+    .chat.open { display: block; }
+    .chat-head { padding: 16px; color: #fff; background: var(--navy); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .chat-head strong { display: block; }
+    .chat-head span { color: #cfe8ff; font-size: 12px; }
+    .chat-close { width: 34px; height: 34px; border: 1px solid rgba(255,255,255,0.22); border-radius: 8px; color: #fff; background: transparent; cursor: pointer; font-size: 18px; }
+    .chat-body { height: 320px; overflow: auto; padding: 16px; background: #f8fafc; display: grid; align-content: start; gap: 10px; }
+    .bubble { max-width: 88%; padding: 10px 12px; border-radius: 8px; color: var(--ink); background: #eaf4ff; font-size: 14px; }
+    .bubble.user { margin-left: auto; color: #064e3b; background: #dcfce7; }
+    .quick { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px; border-top: 1px solid var(--line); background: #fff; }
+    .quick button { min-height: 38px; border: 1px solid var(--line); border-radius: 8px; color: var(--navy); background: #fff; font-weight: 700; cursor: pointer; }
+    .quick button:hover { border-color: var(--blue); color: var(--blue); }
+    @media (max-width: 980px) { .nav-links { display: none; } .hero { min-height: 82vh; } .hero-metrics, .grid, .projects, .process, .diagnostic, .split { grid-template-columns: 1fr; } .process { gap: 12px; } .step { min-height: auto; } }
+    @media (max-width: 640px) { .nav { min-height: 68px; } .brand-text span { display: none; } .nav-actions .btn-outline { display: none; } .hero-inner { padding: 64px 0 54px; } .hero-copy { font-size: 17px; } .hero-actions .btn { width: 100%; } section { padding: 54px 0; } .field-grid { grid-template-columns: 1fr; } .chat-launch { right: 16px; bottom: 16px; } .chat { right: 14px; bottom: 84px; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <nav class="nav" aria-label="Navegacion principal">
+      <a class="brand" href="#inicio" aria-label="ADVISERS PERU inicio"><span class="brand-mark">AP</span><span class="brand-text"><strong>ADVISERS PERU</strong><span>Automatizacion empresarial e IA aplicada</span></span></a>
+      <div class="nav-links"><a href="#servicios">Servicios</a><a href="#metodo">Metodo</a><a href="#proyectos">Proyectos</a><a href="#diagnostico">Diagnostico</a></div>
+      <div class="nav-actions"><a class="btn btn-outline" href="#diagnostico">Diagnostico</a><button class="btn btn-whatsapp" type="button" data-open-chat>WhatsApp</button></div>
+    </nav>
+  </header>
+  <main>
+    <section class="hero" id="inicio"><div class="hero-inner"><div class="eyebrow">Transformacion digital para PyMEs</div><h1>ADVISERS PERU</h1><p class="hero-copy">Automatizamos procesos, atencion y ventas con bots, CRM, tickets, n8n e IA aplicada para que tu empresa trabaje con mas orden, velocidad y trazabilidad.</p><div class="hero-actions"><a class="btn btn-primary" href="#diagnostico">Solicitar diagnostico digital</a><button class="btn btn-outline" type="button" data-open-chat>Probar bot demo</button></div><div class="hero-metrics" aria-label="Capacidades principales"><div class="metric"><strong>Bots</strong><span>Web, WhatsApp, Facebook e Instagram</span></div><div class="metric"><strong>CRM</strong><span>Leads, clientes, tickets y proyectos</span></div><div class="metric"><strong>n8n</strong><span>Workflows conectados a datos reales</span></div></div></div></section>
+    <section class="alt"><div class="wrap split"><div class="section-head"><h2>Problemas que resolvemos</h2><p>La mayoria de PyMEs no necesita empezar con un sistema enorme. Necesita ordenar atencion, clientes, tareas y datos para tomar mejores decisiones.</p></div><ul class="problem-list"><li><span class="check">✓</span><span>Consultas por WhatsApp sin seguimiento ni responsable claro.</span></li><li><span class="check">✓</span><span>Clientes, tickets y oportunidades dispersas en chats, hojas y archivos.</span></li><li><span class="check">✓</span><span>Procesos manuales repetitivos que consumen tiempo operativo.</span></li><li><span class="check">✓</span><span>Falta de indicadores para saber que se atiende, que se vende y que queda pendiente.</span></li></ul></div></section>
+    <section id="servicios"><div class="wrap"><div class="section-head"><h2>Servicios principales</h2><p>Implementamos soluciones por fases, con alcance claro y documentacion desde el Project Charter.</p></div><div class="grid"><article class="card"><span class="tag">01</span><h3>Automatizacion con n8n</h3><p>Conectamos formularios, WhatsApp, CRM, bases de datos, correos y APIs para reducir tareas manuales.</p></article><article class="card"><span class="tag">02</span><h3>Bots para atencion</h3><p>Disenamos flujos para web, WhatsApp, Facebook e Instagram con derivacion humana y registro de trazabilidad.</p></article><article class="card"><span class="tag">03</span><h3>CRM y tickets</h3><p>Ordenamos leads, clientes, oportunidades, solicitudes y responsables para mejorar seguimiento y soporte.</p></article><article class="card"><span class="tag">04</span><h3>Sistemas internos</h3><p>Construimos modulos operativos, dashboards y aplicaciones para necesidades reales de cada empresa.</p></article><article class="card"><span class="tag">05</span><h3>IA aplicada</h3><p>Usamos IA como apoyo operativo con supervision humana, limites claros y control sobre datos sensibles.</p></article><article class="card"><span class="tag">06</span><h3>Transformacion digital</h3><p>Guiamos el cambio por etapas: diagnostico, charter, prototipo, implementacion, pruebas y mejora continua.</p></article></div></div></section>
+    <section class="alt" id="metodo"><div class="wrap"><div class="section-head"><h2>Metodo de trabajo</h2><p>Avanzamos con control de alcance, iteraciones cortas y criterios de aceptacion. La tecnologia se implementa cuando el proceso esta claro.</p></div><div class="process"><div class="step"><strong>Diagnostico</strong></div><div class="step"><strong>Project Charter</strong></div><div class="step"><strong>Prototipo</strong></div><div class="step"><strong>Implementacion</strong></div><div class="step"><strong>Pruebas</strong></div><div class="step"><strong>Puesta en marcha</strong></div><div class="step"><strong>Mejora continua</strong></div></div></div></section>
+    <section id="proyectos"><div class="wrap"><div class="section-head"><h2>Proyectos en implementacion</h2><p>Estos proyectos se muestran como referencia metodologica. No se publican datos sensibles ni informacion privada de clientes.</p></div><div class="projects"><article class="project"><span class="status">En implementacion</span><h3>PAXMARK</h3><p>Plataforma operativa tipo SGAT / Paxmark One para organizar modulos, usuarios, permisos y operaciones.</p></article><article class="project"><span class="status">En implementacion</span><h3>ADUALINE LOGISTICS</h3><p>Automatizacion de atencion, tickets, clientes, empleados disponibles e historial operativo.</p></article><article class="project"><span class="status">En evaluacion</span><h3>AYMO IMPEX</h3><p>Asesoria para automatizar procesos comerciales y operativos ligados a importacion y seguimiento.</p></article></div></div></section>
+    <section class="alt" id="diagnostico"><div class="wrap diagnostic"><form class="form-panel" id="leadForm"><div class="section-head"><h2>Solicita un diagnostico digital</h2><p>Cuéntanos que proceso quieres ordenar o automatizar. Un asesor revisara tu solicitud y se comunicara contigo.</p></div><div class="field-grid"><div class="field"><label for="name">Nombre y apellido</label><input id="name" name="nombre" autocomplete="name" required></div><div class="field"><label for="company">Empresa</label><input id="company" name="empresa" autocomplete="organization" required></div><div class="field"><label for="phone">WhatsApp</label><input id="phone" name="whatsapp" inputmode="tel" autocomplete="tel"></div><div class="field"><label for="email">Correo</label><input id="email" name="correo" type="email" autocomplete="email"></div><div class="field"><label for="service">Servicio de interes</label><select id="service" name="servicio_interes" required><option value="">Seleccionar</option><option>Bot WhatsApp / Web</option><option>CRM y tickets</option><option>Automatizacion con n8n</option><option>Sistema interno</option><option>Diagnostico de transformacion digital</option></select></div><div class="field"><label for="urgency">Urgencia</label><select id="urgency" name="urgencia" required><option value="">Seleccionar</option><option>Esta semana</option><option>Este mes</option><option>En evaluacion</option></select></div><div class="field full"><label for="problem">Principal problema a resolver</label><textarea id="problem" name="problema" required></textarea></div></div><label class="consent"><input type="checkbox" name="acepta_contacto" required><span>Autorizo a ADVISERS PERU a contactarme para atender esta solicitud de diagnostico, cotizacion o soporte.</span></label><button class="btn btn-primary" id="leadSubmit" type="submit">Registrar solicitud demo</button><div class="form-message" id="formMessage" role="status" aria-live="polite"></div></form><aside class="contact-panel"><h3>Atencion comercial y soporte</h3><p>Tu solicitud se registra de forma segura para que nuestro equipo comercial pueda revisarla y contactarte.</p><ul class="contact-list"><li><strong>Canal principal:</strong> WhatsApp Business</li><li><strong>Redes:</strong> Facebook, Instagram y LinkedIn</li><li><strong>Metodo:</strong> Project Charter, backlog y sprints</li><li><strong>Control:</strong> privacidad, seguridad e IA responsable</li></ul><button class="btn btn-whatsapp" type="button" data-open-chat>Hablar por WhatsApp</button><p class="privacy">Aviso: al enviar tus datos autorizas a ADVISERS PERU a contactarte para atender tu solicitud. No solicitamos contrasenas ni datos sensibles en el primer contacto.</p></aside></div></section>
+  </main>
+  <footer><div class="foot"><strong>ADVISERS PERU | Digital Hub v0.1.3 demo</strong><span>Automatizacion empresarial, bots, CRM, n8n e IA aplicada.</span></div></footer>
+  <button class="chat-launch" type="button" aria-label="Abrir bot demo" data-open-chat>?</button><div class="chat" id="chat" aria-live="polite"><div class="chat-head"><div><strong>Asistente ADVISERS</strong><span>Demo local sin envio real de datos</span></div><button class="chat-close" type="button" aria-label="Cerrar bot" data-close-chat>×</button></div><div class="chat-body" id="chatBody"><div class="bubble">Hola, soy el asistente virtual de ADVISERS PERU. Puedo orientarte y derivarte con un asesor.</div><div class="bubble">Elige una opcion para simular el flujo inicial.</div></div><div class="quick"><button type="button" data-chat="Quiero automatizar WhatsApp">WhatsApp</button><button type="button" data-chat="Necesito CRM y tickets">CRM / tickets</button><button type="button" data-chat="Quiero un sistema interno">Sistema</button><button type="button" data-chat="Hablar con asesor">Asesor</button></div></div>
+  <script>
+    const chat = document.getElementById('chat');
+    const chatBody = document.getElementById('chatBody');
+    const openButtons = document.querySelectorAll('[data-open-chat]');
+    const closeButton = document.querySelector('[data-close-chat]');
+    const form = document.getElementById('leadForm');
+    const formMessage = document.getElementById('formMessage');
+    const submitButton = document.getElementById('leadSubmit');
+    const webhookUrl = 'https://n8n-n8n.sdb2lb.easypanel.host/webhook/lead-landing';
+    function addBubble(text, isUser) { const bubble = document.createElement('div'); bubble.className = isUser ? 'bubble user' : 'bubble'; bubble.textContent = text; chatBody.appendChild(bubble); chatBody.scrollTop = chatBody.scrollHeight; }
+    function replyFor(text) { if (text.includes('WhatsApp')) return 'Perfecto. En produccion registraremos tu empresa, volumen de consultas, horarios y tipo de derivacion humana.'; if (text.includes('CRM')) return 'Excelente. El primer paso sera definir leads, clientes, tickets, estados y responsables.'; if (text.includes('sistema')) return 'Podemos iniciar con un Project Charter para definir modulos, usuarios, roles y entregables por fase.'; return 'Claro. Derivare tu solicitud a un asesor humano. En produccion se creara un ticket o lead automaticamente.'; }
+    openButtons.forEach((button) => { button.addEventListener('click', () => chat.classList.add('open')); });
+    closeButton.addEventListener('click', () => chat.classList.remove('open'));
+    document.querySelectorAll('[data-chat]').forEach((button) => { button.addEventListener('click', () => { const value = button.dataset.chat; addBubble(value, true); window.setTimeout(() => addBubble(replyFor(value), false), 350); }); });
+    function showFormMessage(message, type) { formMessage.textContent = message; formMessage.className = 'form-message ' + type; formMessage.style.display = 'block'; }
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      const payload = { nombre: String(data.get('nombre') || '').trim(), empresa: String(data.get('empresa') || '').trim(), whatsapp: String(data.get('whatsapp') || '').trim(), correo: String(data.get('correo') || '').trim(), servicio_interes: String(data.get('servicio_interes') || '').trim(), urgencia: String(data.get('urgencia') || '').trim(), problema: String(data.get('problema') || '').trim(), acepta_contacto: data.get('acepta_contacto') === 'on' };
+      if (!payload.nombre || !payload.empresa || (!payload.whatsapp && !payload.correo) || !payload.problema || !payload.acepta_contacto) { showFormMessage('Completa nombre, empresa, WhatsApp o correo, el problema principal y acepta el contacto.', 'error'); return; }
+      submitButton.disabled = true;
+      submitButton.textContent = 'Registrando solicitud...';
+      showFormMessage('Estamos registrando tu solicitud.', 'info');
+      try {
+        const response = await fetch(webhookUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        if (!response.ok) throw new Error('Webhook response: ' + response.status);
+        showFormMessage('Solicitud registrada correctamente. Un asesor de ADVISERS PERU se comunicará contigo.', 'success');
+        form.reset();
+      } catch (error) {
+        showFormMessage('No se pudo registrar la solicitud. Intenta nuevamente o escríbenos por WhatsApp.', 'error');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Registrar solicitud demo';
+      }
+    });
+  </script>
+</body>
+</html>
