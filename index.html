@@ -618,6 +618,82 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.16);
     }
 
+    .social-channels {
+      margin: 0 0 24px;
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .social-heading {
+      margin: 0 0 12px;
+      color: #f8fafc;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .social-link {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 10px;
+      align-items: center;
+      min-height: 58px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 8px;
+      color: #f8fafc;
+      background: rgba(255, 255, 255, 0.08);
+      text-decoration: none;
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .social-link:hover {
+      transform: translateY(-2px);
+      border-color: rgba(20, 184, 166, 0.85);
+      background: rgba(20, 184, 166, 0.16);
+    }
+
+    .social-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      color: var(--navy);
+      background: #dff8f5;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .social-copy,
+    .social-detail {
+      display: block;
+    }
+
+    .social-link strong {
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .social-detail {
+      margin-top: 2px;
+      color: #dbeafe;
+      font-size: 11px;
+      line-height: 1.25;
+    }
+
     .privacy {
       color: #dbeafe;
       font-size: 12px;
@@ -768,6 +844,7 @@
       .hero-actions .btn { width: 100%; }
       section { padding: 54px 0; }
       .field-grid { grid-template-columns: 1fr; }
+      .social-grid { grid-template-columns: 1fr; }
       .chat-launch { right: 16px; bottom: 16px; }
       .chat { right: 14px; bottom: 84px; }
     }
@@ -997,6 +1074,10 @@
             <input type="checkbox" name="acepta_contacto" required>
             <span>Autorizo a ADVISERS PERU a contactarme para atender esta solicitud de diagnóstico, cotización o soporte.</span>
           </label>
+          <input type="hidden" name="origen" value="Landing ADVISERS PERU">
+          <input type="hidden" name="campaign_source" value="">
+          <input type="hidden" name="campaign_medium" value="">
+          <input type="hidden" name="campaign_name" value="">
           <button class="btn btn-primary" id="leadSubmit" type="submit">Registrar solicitud</button>
           <div class="form-message" id="formMessage" role="status" aria-live="polite"></div>
         </form>
@@ -1010,6 +1091,39 @@
             <li><strong>Metodo:</strong> Project Charter, backlog y sprints</li>
             <li><strong>Control:</strong> privacidad, seguridad e IA responsable</li>
           </ul>
+          <div class="social-channels" aria-label="Canales sociales de ADVISERS PERU">
+            <p class="social-heading">Canales oficiales</p>
+            <div class="social-grid">
+              <a class="social-link" href="#" data-social-channel="WhatsApp" aria-label="WhatsApp ADVISERS PERU">
+                <span class="social-icon">WA</span>
+                <span class="social-copy"><strong>WhatsApp</strong><span class="social-detail">Atencion comercial</span></span>
+              </a>
+              <a class="social-link" href="#" data-social-channel="LinkedIn" aria-label="LinkedIn ADVISERS PERU">
+                <span class="social-icon">in</span>
+                <span class="social-copy"><strong>LinkedIn</strong><span class="social-detail">Empresa y casos</span></span>
+              </a>
+              <a class="social-link" href="#" data-social-channel="Facebook" aria-label="Facebook ADVISERS PERU">
+                <span class="social-icon">fb</span>
+                <span class="social-copy"><strong>Facebook</strong><span class="social-detail">Comunidad</span></span>
+              </a>
+              <a class="social-link" href="#" data-social-channel="Instagram" aria-label="Instagram ADVISERS PERU">
+                <span class="social-icon">ig</span>
+                <span class="social-copy"><strong>Instagram</strong><span class="social-detail">Contenido visual</span></span>
+              </a>
+              <a class="social-link" href="#" data-social-channel="TikTok" aria-label="TikTok ADVISERS PERU">
+                <span class="social-icon">tt</span>
+                <span class="social-copy"><strong>TikTok</strong><span class="social-detail">Videos cortos</span></span>
+              </a>
+              <a class="social-link" href="#" data-social-channel="YouTube" aria-label="YouTube ADVISERS PERU">
+                <span class="social-icon">yt</span>
+                <span class="social-copy"><strong>YouTube</strong><span class="social-detail">Demos y guias</span></span>
+              </a>
+              <a class="social-link" href="#" data-social-channel="Correo" aria-label="Correo ADVISERS PERU">
+                <span class="social-icon">@</span>
+                <span class="social-copy"><strong>Correo</strong><span class="social-detail">Contacto directo</span></span>
+              </a>
+            </div>
+          </div>
           <button class="btn btn-whatsapp" type="button" data-open-chat>Hablar por WhatsApp</button>
           <p class="privacy">Aviso: al enviar tus datos autorizas a ADVISERS PERU a contactarte para atender tu solicitud. No solicitamos contrasenas ni datos sensibles en el primer contacto.</p>
         </aside>
@@ -1055,6 +1169,7 @@
     const submitButton = document.getElementById('leadSubmit');
     const consentCheckbox = form.elements.namedItem('acepta_contacto');
     const webhookUrl = 'https://n8n-n8n.sdb2lb.easypanel.host/webhook/lead-landing';
+    const pageParams = new URLSearchParams(window.location.search);
 
     function addBubble(text, isUser) {
       const bubble = document.createElement('div');
@@ -1104,6 +1219,11 @@
         .trim();
     }
 
+    function campaignValue(data, fieldName, queryName) {
+      const fromQuery = cleanFormValue(pageParams.get(queryName));
+      return fromQuery || cleanFormValue(data.get(fieldName));
+    }
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const data = new FormData(form);
@@ -1115,7 +1235,11 @@
         servicio_interes: cleanFormValue(data.get('servicio_interes')),
         urgencia: cleanFormValue(data.get('urgencia')),
         problema: cleanFormValue(data.get('problema')),
-        acepta_contacto: consentCheckbox instanceof HTMLInputElement && consentCheckbox.checked
+        acepta_contacto: consentCheckbox instanceof HTMLInputElement && consentCheckbox.checked,
+        origen: cleanFormValue(data.get('origen')) || 'Landing ADVISERS PERU',
+        campaign_source: campaignValue(data, 'campaign_source', 'utm_source'),
+        campaign_medium: campaignValue(data, 'campaign_medium', 'utm_medium'),
+        campaign_name: campaignValue(data, 'campaign_name', 'utm_campaign')
       };
 
       if (!payload.nombre || !payload.empresa || (!payload.whatsapp && !payload.correo) || !payload.problema || !payload.acepta_contacto) {

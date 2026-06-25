@@ -27,6 +27,37 @@ Content-Type: application/json
 
 El sitio no incluye backend, base de datos, credenciales, tokens ni conexión directa con ADVISERS IA OS. El logo y la imagen principal están incrustados en `index.html` para que el contenedor estático no dependa de archivos adicionales.
 
+## Captación multicanal
+
+La landing muestra un bloque visible de canales oficiales:
+
+- WhatsApp
+- LinkedIn
+- Facebook
+- Instagram
+- TikTok
+- YouTube
+- Correo
+
+Los enlaces sociales quedan preparados con `href="#"` como placeholder seguro. Para publicar URLs reales, edita el bloque `social-channels` en `index.html` y reemplaza cada `href="#"` por la URL oficial correspondiente. El botón principal de WhatsApp se mantiene independiente.
+
+El formulario envía además metadata para identificar origen y campañas:
+
+```json
+{
+  "origen": "Landing ADVISERS PERU",
+  "campaign_source": "",
+  "campaign_medium": "",
+  "campaign_name": ""
+}
+```
+
+Los campos de campaña pueden configurarse en los inputs ocultos del formulario o recibirse desde parámetros UTM:
+
+```text
+?utm_source=facebook&utm_medium=social&utm_campaign=diagnostico_julio
+```
+
 ## Ejecución local
 
 Para probar el sitio y el formulario en condiciones similares a producción:
@@ -70,6 +101,6 @@ No se requieren variables de entorno.
 3. Marca la autorización de contacto.
 4. Presiona **Registrar solicitud**.
 5. Verifica el mensaje de confirmación en pantalla.
-6. En n8n, confirma una ejecución exitosa de `WF-LEAD-LANDING` y revisa el JSON recibido.
+6. En n8n, confirma una ejecución exitosa de `WF-LEAD-LANDING` y revisa el JSON recibido, incluyendo `origen`, `campaign_source`, `campaign_medium` y `campaign_name`.
 
 El botón queda deshabilitado mientras se procesa la solicitud para evitar envíos duplicados. El botón de WhatsApp funciona de forma independiente.
