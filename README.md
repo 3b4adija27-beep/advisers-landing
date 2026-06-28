@@ -104,3 +104,79 @@ No se requieren variables de entorno.
 6. En n8n, confirma una ejecución exitosa de `WF-LEAD-LANDING` y revisa el JSON recibido, incluyendo `origen`, `campaign_source`, `campaign_medium` y `campaign_name`.
 
 El botón queda deshabilitado mientras se procesa la solicitud para evitar envíos duplicados. El botón de WhatsApp funciona de forma independiente.
+
+## MVP v1.3 - Diagnostico guiado multicanal
+
+La landing mantiene el despliegue estatico con Nginx y sigue enviando solicitudes al webhook productivo de n8n:
+
+```text
+https://n8n-n8n.sdb2lb.easypanel.host/webhook/lead-landing
+```
+
+### Cambios del formulario
+
+El formulario "Solicita un diagnostico digital" ahora funciona como diagnostico guiado:
+
+1. Datos basicos del contacto.
+2. Seleccion de servicio.
+3. Preguntas predeterminadas por servicio.
+4. Ruta preliminar visible para el cliente.
+5. Envio a n8n con payload extendido.
+
+La landing no conecta directamente con ADVISERS IA OS para registrar casos. Solo consulta, si esta disponible, el endpoint publico de catalogo:
+
+```text
+https://os.advper.cloud/api/public/service-catalog/diagnostic-options
+```
+
+Si el endpoint no responde, usa un catalogo local fallback con los mismos `service_code` principales.
+
+### Payload enviado a n8n
+
+Incluye:
+
+- `nombre`
+- `empresa`
+- `whatsapp`
+- `correo`
+- `servicio_interes`
+- `urgencia`
+- `problema`
+- `acepta_contacto`
+- `origen`
+- `source_channel=WEB_FORM`
+- `source_platform=Landing ADVISERS PERU`
+- `service_catalog_item_id`
+- `service_code`
+- `guided_answers`
+- `guided_outcome`
+- `diagnostic_version`
+- `consent_status`
+- `preliminary_solution`
+- `campaign_source`
+- `campaign_medium`
+- `campaign_name`
+
+No se exponen tokens, API keys ni claves. El webhook n8n sigue siendo el unico destino del formulario.
+
+### Validacion en navegador
+
+1. Abrir la landing.
+2. Seleccionar un servicio.
+3. Confirmar que aparecen preguntas tipo chip/radio.
+4. Responder al menos tres preguntas.
+5. Completar nombre, empresa, WhatsApp o correo, problema y consentimiento.
+6. Abrir DevTools > Network y enviar.
+7. Revisar que el POST vaya a `/webhook/lead-landing` y que el JSON tenga `guided_answers`, `guided_outcome`, `source_channel` y `service_code`.
+8. Confirmar que no se pregunta "donde registras informacion".
+
+### EasyPanel
+
+Mantener la configuracion actual:
+
+- Source: GitHub
+- Repository: `3b4adija27-beep/advisers-landing`
+- Branch: `main`
+- Build: Dockerfile
+- Dockerfile: `Dockerfile`
+- Puerto interno: `80`

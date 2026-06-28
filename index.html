@@ -560,6 +560,86 @@
 
     .consent input { min-height: auto; margin-top: 3px; }
 
+    .guided-diagnostic {
+      grid-column: 1 / -1;
+      display: grid;
+      gap: 14px;
+      margin-top: 4px;
+    }
+
+    .diagnostic-progress {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(135deg, #f8fafc, #ecfeff);
+      padding: 12px 14px;
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .question-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f8fafc;
+      padding: 14px;
+    }
+
+    .question-title {
+      margin: 0 0 10px;
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .option-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .option-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid #bfd7ea;
+      border-radius: 999px;
+      background: #fff;
+      padding: 8px 11px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+    }
+
+    .option-chip:has(input:checked) {
+      border-color: var(--teal);
+      background: var(--teal-soft);
+      color: var(--navy);
+    }
+
+    .option-chip input {
+      width: auto;
+      min-height: auto;
+      margin: 0;
+    }
+
+    .preliminary-route {
+      display: none;
+      grid-column: 1 / -1;
+      border: 1px solid #99f6e4;
+      border-radius: 8px;
+      background: #ecfdf5;
+      padding: 14px;
+      color: #134e4a;
+      font-size: 14px;
+    }
+
+    .preliminary-route.show { display: block; }
     .form-message {
       display: none;
       margin-top: 14px;
@@ -1070,7 +1150,8 @@
               <textarea id="problem" name="problema" required></textarea>
             </div>
           </div>
-          <label class="consent">
+          <div class="guided-diagnostic" id="guidedDiagnostic" aria-live="polite"></div>
+          <div class="preliminary-route" id="preliminaryRoute"></div>          <label class="consent">
             <input type="checkbox" name="acepta_contacto" required>
             <span>Autorizo a ADVISERS PERU a contactarme para atender esta solicitud de diagnóstico, cotización o soporte.</span>
           </label>
@@ -1168,8 +1249,63 @@
     const formMessage = document.getElementById('formMessage');
     const submitButton = document.getElementById('leadSubmit');
     const consentCheckbox = form.elements.namedItem('acepta_contacto');
+    const guidedContainer = document.getElementById('guidedDiagnostic');
+    const preliminaryRoute = document.getElementById('preliminaryRoute');
+    const serviceSelect = document.getElementById('service');
     const webhookUrl = 'https://n8n-n8n.sdb2lb.easypanel.host/webhook/lead-landing';
+    const catalogUrl = 'https://os.advper.cloud/api/public/service-catalog/diagnostic-options';
     const pageParams = new URLSearchParams(window.location.search);
+    const diagnosticVersion = 'MVP v1.3';
+
+    const fallbackCatalog = [
+      service('BOT_WHATSAPP_WEB', 'Bot WhatsApp / Web', 'Atencion automatizada, registro de leads y derivacion humana.', 'Bot WhatsApp / Web + registro de leads + seguimiento.', ['Mapear consultas frecuentes', 'Definir derivacion humana', 'Registrar leads y seguimiento'], ['ADVISER-BUSINESS', 'ADVISER-AUTOMATION', 'ADVISER-CORE', 'ADVISER-DATA', 'ADVISER-QA', 'ADVISER-POSTVENTA'], [
+        q('bot_first_need', 'Que necesitas automatizar primero?', ['Responder consultas frecuentes', 'Registrar leads', 'Tomar pedidos', 'Confirmar reservas', 'Derivar a un asesor', 'Dar seguimiento automatico']),
+        q('daily_requests', 'Cuantas solicitudes recibes aproximadamente al dia?', ['0 a 20', '21 a 50', '51 a 100', 'Mas de 100', 'No estoy seguro']),
+        q('handoff', 'Necesitas que el bot derive a una persona?', ['Si, siempre que el cliente lo pida', 'Si, solo en casos importantes', 'No por ahora', 'No estoy seguro'])
+      ]),
+      service('CRM_TICKETS', 'CRM y tickets', 'Centralizacion de clientes, responsables, estados y reportes.', 'CRM o sistema de tickets para centralizar clientes, responsables, estados, seguimiento y reportes.', ['Definir estados', 'Mapear responsables', 'Disenar reportes y alertas'], ['ADVISER-BUSINESS', 'ADVISER-COMMERCIAL', 'ADVISER-DATA', 'ADVISER-UX', 'ADVISER-CODEX', 'ADVISER-QA', 'ADVISER-POSTVENTA'], [
+        q('crm_control', 'Que deseas controlar mejor?', ['Clientes', 'Cotizaciones', 'Seguimiento comercial', 'Tickets de soporte', 'Reclamos', 'Actividades del equipo']),
+        q('crm_users', 'Quienes usarian el sistema?', ['Solo administracion', 'Ventas', 'Soporte', 'Operaciones', 'Varias areas']),
+        q('crm_result', 'Que resultado esperas?', ['No perder oportunidades', 'Ver estado de cada cliente', 'Asignar responsables', 'Medir tiempos de respuesta', 'Tener reportes'])
+      ]),
+      service('AUTOMATION_N8N', 'Automatizacion con n8n', 'Conexion de herramientas, alertas y trazabilidad operativa.', 'Automatizacion n8n para conectar herramientas, reducir tareas manuales y registrar informacion.', ['Identificar disparadores', 'Definir herramientas a conectar', 'Controlar errores y bitacora'], ['ADVISER-BUSINESS', 'ADVISER-AUTOMATION', 'ADVISER-CORE', 'ADVISER-DATA', 'ADVISER-QA', 'ADVISER-POSTVENTA'], [
+        q('automation_process', 'Que proceso quieres automatizar?', ['Captura de leads', 'Envio de mensajes', 'Registro en hojas o CRM', 'Alertas internas', 'Reportes automaticos', 'Seguimiento comercial', 'Tareas repetitivas']),
+        q('automation_tools', 'Que herramientas deseas conectar?', ['WhatsApp', 'Gmail / correo', 'Google Sheets', 'CRM', 'Formularios', 'Base de datos', 'No estoy seguro']),
+        q('automation_frequency', 'Que tan repetitivo es el proceso?', ['Diario', 'Varias veces por semana', 'Ocasional', 'No estoy seguro'])
+      ]),
+      service('INTERNAL_SYSTEM', 'Sistema interno', 'Plataforma interna para procesos, estados, responsables y documentos.', 'Plataforma interna por modulos para centralizar procesos, responsables, estados, reportes y documentos.', ['Priorizar modulo inicial', 'Definir roles y permisos', 'Disenar MVP por fases'], ['ADVISER-BUSINESS', 'ADVISER-PMO', 'ADVISER-UX', 'ADVISER-CODEX', 'ADVISER-DATA', 'ADVISER-QA', 'ADVISER-POSTVENTA'], [
+        q('internal_area', 'Que area deseas ordenar?', ['Ventas', 'Soporte', 'Operaciones', 'Administracion', 'Inventario', 'Proyectos', 'Clientes']),
+        q('internal_features', 'Que funciones deberia tener primero?', ['Registro de clientes', 'Registro de solicitudes', 'Estados y responsables', 'Reportes', 'Adjuntar documentos', 'Aprobaciones internas', 'Alertas']),
+        q('control_level', 'Que nivel de control necesitas?', ['Basico', 'Por roles y permisos', 'Con reportes', 'Con automatizaciones', 'No estoy seguro'])
+      ]),
+      service('DIGITAL_DIAGNOSTIC', 'Diagnostico de transformacion digital', 'Evaluacion inicial para priorizar oportunidades digitales.', 'Diagnostico digital para identificar oportunidades, priorizar procesos y preparar una propuesta ajustada.', ['Levantar procesos', 'Priorizar oportunidades', 'Preparar ruta de solucion'], ['RECEPCION INTELIGENTE', 'ADVISER-BUSINESS', 'ADVISER-COMMERCIAL', 'ADVISER-PMO', 'ADVISER-DATA'], [
+        q('diagnostic_goal', 'Que quieres descubrir con el diagnostico?', ['Que procesos puedo automatizar', 'Que sistema necesito', 'Como mejorar atencion al cliente', 'Como ordenar ventas', 'Como tener reportes', 'Como reducir tareas manuales']),
+        q('diagnostic_area', 'Que area te preocupa mas?', ['Ventas', 'Atencion al cliente', 'Operaciones', 'Administracion', 'Reportes', 'Gestion interna']),
+        q('diagnostic_expected_output', 'Que esperas recibir?', ['Recomendacion inicial', 'Ruta de solucion', 'Propuesta comercial', 'Mapa de procesos', 'Estimacion de inversion', 'No estoy seguro'])
+      ])
+    ];
+
+    let diagnosticCatalog = fallbackCatalog;
+
+    function q(question_code, question_text, options) {
+      return {
+        question_code,
+        question_text,
+        question_type: 'SINGLE_CHOICE',
+        required: true,
+        active: true,
+        options: options.map((label, index) => ({ option_code: `${question_code}_${index + 1}`, option_label: label }))
+      };
+    }
+
+    function service(service_code, name, description, preliminary_solution_template, recommended_next_steps, recommended_roles, questions) {
+      const general = [
+        q('business_objective', 'Que objetivo quieres lograr primero?', ['Aumentar ventas', 'Ordenar atencion al cliente', 'Automatizar respuestas', 'Reducir tareas manuales', 'Controlar solicitudes o tickets', 'Mejorar seguimiento comercial', 'Tener reportes e indicadores', 'Ordenar procesos internos', 'Crear una plataforma interna', 'Evaluar oportunidades digitales']),
+        q('team_size', 'Cuantas personas participan aproximadamente en ese proceso?', ['Solo yo', '2 a 4 personas', '5 a 10 personas', '11 a 25 personas', 'Mas de 25 personas']),
+        q('solution_level', 'Que tipo de solucion esperas?', ['Basica: resolver lo principal', 'Recomendada: ordenar y automatizar mejor', 'Crecimiento: solucion mas completa y escalable', 'No estoy seguro, quiero recomendacion'])
+      ];
+      return { service_code, name, description, preliminary_solution_template, recommended_next_steps, recommended_roles, questions: [...general, ...questions] };
+    }
 
     function addBubble(text, isUser) {
       const bubble = document.createElement('div');
@@ -1180,24 +1316,14 @@
     }
 
     function replyFor(text) {
-      if (text.includes('WhatsApp')) {
-        return 'Perfecto. En produccion registraremos tu empresa, volumen de consultas, horarios y tipo de derivacion humana.';
-      }
-      if (text.includes('CRM')) {
-        return 'Excelente. El primer paso sera definir leads, clientes, tickets, estados y responsables.';
-      }
-      if (text.includes('sistema')) {
-        return 'Podemos iniciar con un Project Charter para definir modulos, usuarios, roles y entregables por fase.';
-      }
-      return 'Claro. Derivare tu solicitud a un asesor humano. En produccion se creara un ticket o lead automaticamente.';
+      if (text.includes('WhatsApp')) return 'Perfecto. Podemos orientar un flujo de atencion, registro y derivacion humana.';
+      if (text.includes('CRM')) return 'Excelente. El primer paso sera definir clientes, tickets, estados y responsables.';
+      if (text.includes('sistema')) return 'Podemos iniciar con un Project Charter para definir modulos, roles y entregables por fase.';
+      return 'Claro. Registraremos tu solicitud y un asesor humano revisara el caso.';
     }
 
-    openButtons.forEach((button) => {
-      button.addEventListener('click', () => chat.classList.add('open'));
-    });
-
+    openButtons.forEach((button) => button.addEventListener('click', () => chat.classList.add('open')));
     closeButton.addEventListener('click', () => chat.classList.remove('open'));
-
     document.querySelectorAll('[data-chat]').forEach((button) => {
       button.addEventListener('click', () => {
         const value = button.dataset.chat;
@@ -1213,10 +1339,7 @@
     }
 
     function cleanFormValue(value) {
-      return String(value || '')
-        .trim()
-        .replace(/^(?:=\s*)?[`'"]+/, '')
-        .trim();
+      return String(value || '').trim().replace(/^(?:=\s*)?[`'"]+/, '').trim();
     }
 
     function campaignValue(data, fieldName, queryName) {
@@ -1224,9 +1347,114 @@
       return fromQuery || cleanFormValue(data.get(fieldName));
     }
 
+    function selectedService() {
+      const selectedName = cleanFormValue(serviceSelect.value);
+      return diagnosticCatalog.find((item) => item.name === selectedName || item.service_code === selectedName)
+        || diagnosticCatalog.find((item) => selectedName && selectedName.toLowerCase().includes(item.name.toLowerCase()))
+        || fallbackCatalog[4];
+    }
+
+    function renderGuidedQuestions() {
+      const service = selectedService();
+      if (!service || !serviceSelect.value) {
+        guidedContainer.innerHTML = '';
+        preliminaryRoute.classList.remove('show');
+        preliminaryRoute.textContent = '';
+        return;
+      }
+      guidedContainer.innerHTML = `
+        <div class="diagnostic-progress"><span>Diagnostico guiado basado en catalogo</span><span>${service.questions.length} preguntas rapidas</span></div>
+        ${service.questions.map((question, index) => `
+          <fieldset class="question-card" data-question-code="${question.question_code}" data-question-text="${question.question_text}">
+            <p class="question-title">${index + 1}. ${question.question_text}</p>
+            <div class="option-grid">
+              ${question.options.map((option) => `
+                <label class="option-chip">
+                  <input type="radio" name="guided_${question.question_code}" value="${option.option_code}" data-label="${option.option_label}" ${question.required ? 'required' : ''}>
+                  <span>${option.option_label}</span>
+                </label>
+              `).join('')}
+            </div>
+          </fieldset>
+        `).join('')}
+      `;
+      preliminaryRoute.classList.add('show');
+      preliminaryRoute.textContent = service.preliminary_solution_template + ' La ruta final sera validada por ADVISERS PERU.';
+    }
+
+    function guidedAnswers() {
+      return Array.from(guidedContainer.querySelectorAll('.question-card')).map((card) => {
+        const selected = card.querySelector('input[type="radio"]:checked');
+        return {
+          question_code: card.dataset.questionCode,
+          question_text: card.dataset.questionText,
+          selected_option_code: selected ? selected.value : '',
+          selected_option_label: selected ? selected.dataset.label : '',
+          answer_text: ''
+        };
+      }).filter((answer) => answer.selected_option_label || answer.answer_text);
+    }
+
+    function buildGuidedOutcome(service, answers, problem, name) {
+      const objective = answers.find((answer) => answer.question_code === 'business_objective')?.selected_option_label || 'Evaluar oportunidad digital';
+      const team = answers.find((answer) => answer.question_code === 'team_size')?.selected_option_label || 'No indicado';
+      const route = service.recommended_next_steps || [];
+      const problemSummary = problem || `El cliente busca ${objective.toLowerCase()} con apoyo de ${service.name}.`;
+      const customerMessage = [
+        `Gracias, ${name}.`,
+        '',
+        'Con base en tus respuestas, identificamos esta oportunidad inicial:',
+        '',
+        'Problema principal detectado:',
+        problemSummary,
+        '',
+        'Ruta preliminar sugerida:',
+        ...route.map((step, index) => `${index + 1}. ${step}`),
+        '',
+        'Posible solucion:',
+        service.preliminary_solution_template,
+        '',
+        'Siguiente paso:',
+        'Un asesor de ADVISERS PERU revisara tu caso y podra enviarte una propuesta ajustada.',
+        '',
+        'La ruta preliminar es una orientacion inicial basada en las respuestas registradas. La propuesta final sera validada por ADVISERS PERU segun alcance, complejidad y condiciones comerciales.',
+        '',
+        'ADVISERS PERU',
+        'ASISTE. INNOVA. CRECE.'
+      ].join('\n');
+      return {
+        problem_summary: problemSummary,
+        opportunity_summary: `Servicio: ${service.name}. Objetivo: ${objective}. Participantes: ${team}.`,
+        preliminary_solution: service.preliminary_solution_template,
+        suggested_solution_type: service.name,
+        recommended_roles: service.recommended_roles || [],
+        next_step: route[0] || 'Revisar caso con ADVISERS PERU.',
+        customer_message: customerMessage
+      };
+    }
+
+    serviceSelect.addEventListener('change', renderGuidedQuestions);
+
+    fetch(catalogUrl)
+      .then((response) => response.ok ? response.json() : null)
+      .then((data) => {
+        if (data && Array.isArray(data.services) && data.services.length) {
+          diagnosticCatalog = data.services;
+          const current = serviceSelect.value;
+          serviceSelect.innerHTML = '<option value="">Seleccionar</option>' + diagnosticCatalog.map((item) => `<option value="${item.name}">${item.name}</option>`).join('');
+          if (current) serviceSelect.value = current;
+          renderGuidedQuestions();
+        }
+      })
+      .catch(() => {
+        diagnosticCatalog = fallbackCatalog;
+      });
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const data = new FormData(form);
+      const service = selectedService();
+      const answers = guidedAnswers();
       const payload = {
         nombre: cleanFormValue(data.get('nombre')),
         empresa: cleanFormValue(data.get('empresa')),
@@ -1237,6 +1465,15 @@
         problema: cleanFormValue(data.get('problema')),
         acepta_contacto: consentCheckbox instanceof HTMLInputElement && consentCheckbox.checked,
         origen: cleanFormValue(data.get('origen')) || 'Landing ADVISERS PERU',
+        source_channel: 'WEB_FORM',
+        source_platform: 'Landing ADVISERS PERU',
+        service_catalog_item_id: service.service_catalog_item_id || null,
+        service_code: service.service_code,
+        guided_answers: answers,
+        guided_outcome: buildGuidedOutcome(service, answers, cleanFormValue(data.get('problema')), cleanFormValue(data.get('nombre'))),
+        diagnostic_version: diagnosticVersion,
+        consent_status: consentCheckbox instanceof HTMLInputElement && consentCheckbox.checked ? 'Si' : 'No',
+        preliminary_solution: service.preliminary_solution_template,
         campaign_source: campaignValue(data, 'campaign_source', 'utm_source'),
         campaign_medium: campaignValue(data, 'campaign_medium', 'utm_medium'),
         campaign_name: campaignValue(data, 'campaign_name', 'utm_campaign')
@@ -1246,10 +1483,14 @@
         showFormMessage('Completa nombre, empresa, WhatsApp o correo, el problema principal y acepta el contacto.', 'error');
         return;
       }
+      if (!payload.servicio_interes || answers.length < 3) {
+        showFormMessage('Selecciona un servicio y responde las preguntas guiadas para recibir una ruta preliminar.', 'error');
+        return;
+      }
 
       submitButton.disabled = true;
       submitButton.textContent = 'Registrando solicitud...';
-      showFormMessage('Estamos registrando tu solicitud.', 'info');
+      showFormMessage('Estamos registrando tu solicitud y ruta preliminar.', 'info');
 
       try {
         const response = await fetch(webhookUrl, {
@@ -1257,15 +1498,14 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-
-        if (!response.ok) {
-          throw new Error('Webhook response: ' + response.status);
-        }
-
-        showFormMessage('Solicitud registrada correctamente. Un asesor de ADVISERS PERU se comunicará contigo.', 'success');
+        if (!response.ok) throw new Error('Webhook response: ' + response.status);
+        preliminaryRoute.classList.add('show');
+        preliminaryRoute.textContent = payload.guided_outcome.customer_message;
+        showFormMessage('Solicitud registrada correctamente. Un asesor de ADVISERS PERU se comunicara contigo.', 'success');
         form.reset();
+        guidedContainer.innerHTML = '';
       } catch (error) {
-        showFormMessage('No se pudo registrar la solicitud. Intenta nuevamente o escríbenos por WhatsApp.', 'error');
+        showFormMessage('No se pudo registrar la solicitud. Intenta nuevamente o escribenos por WhatsApp.', 'error');
       } finally {
         submitButton.disabled = false;
         submitButton.textContent = 'Registrar solicitud';
