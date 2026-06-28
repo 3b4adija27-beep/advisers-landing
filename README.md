@@ -180,3 +180,20 @@ Mantener la configuracion actual:
 - Build: Dockerfile
 - Dockerfile: `Dockerfile`
 - Puerto interno: `80`
+
+## Diagnostico guiado dirigido por servicio + problema
+
+La landing ahora reduce el cuestionario inicial y parte de dos datos:
+
+1. Servicio de interes seleccionado.
+2. Necesidad principal escrita por el cliente.
+
+El campo de necesidad principal tiene mayor jerarquia visual, ayuda breve y tres ejemplos tenues no seleccionables. Despues de escribir el problema, el formulario calcula solo 3 a 5 preguntas dirigidas segun el servicio y el texto escrito.
+
+Validacion sugerida:
+
+- Seleccionar `CRM y tickets` y escribir: `Registramos solicitudes en Excel y queremos seguimiento`.
+- Confirmar que aparecen preguntas sobre control, responsables, estados o reportes.
+- Cambiar a `Bot WhatsApp / Web` y escribir: `Nos llegan mensajes por WhatsApp y no tenemos seguimiento`.
+- Confirmar que aparecen preguntas sobre volumen, derivacion y automatizacion.
+- Enviar el formulario y revisar en Network que el payload incluya `guided_answers`, `guided_outcome.problem_category`, `guided_outcome.diagnosis_clarity`, `source_channel=WEB_FORM` y `service_code`.

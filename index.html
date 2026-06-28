@@ -543,6 +543,78 @@
 
     textarea { min-height: 108px; resize: vertical; }
 
+    .problem-field {
+      position: relative;
+      border: 1px solid #99f6e4;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #f8fafc 0%, #ecfeff 100%);
+      padding: 16px;
+      box-shadow: 0 16px 34px rgba(15, 23, 42, 0.08);
+    }
+
+    .problem-header {
+      display: grid;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+
+    .problem-kicker {
+      color: var(--teal);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .problem-title {
+      color: var(--navy);
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .problem-help {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .problem-field textarea {
+      min-height: 136px;
+      border-color: #7dd3fc;
+      background: #ffffff;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.85);
+    }
+
+    .problem-examples {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+      transition: opacity 160ms ease, max-height 160ms ease;
+    }
+
+    .problem-field.has-input .problem-examples {
+      opacity: 0.38;
+    }
+
+    .example-card {
+      border: 1px dashed #cbd5e1;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.64);
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1.45;
+      padding: 9px 10px;
+    }
+
+    .example-card strong {
+      color: #0f766e;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
     input:focus, select:focus, textarea:focus {
       outline: 3px solid rgba(11, 117, 209, 0.16);
       border-color: var(--blue);
@@ -1145,13 +1217,23 @@
                 <option>En evaluacion</option>
               </select>
             </div>
-            <div class="field full">
-              <label for="problem">Principal problema a resolver</label>
-              <textarea id="problem" name="problema" required></textarea>
+            <div class="field full problem-field" id="problemField">
+              <div class="problem-header">
+                <span class="problem-kicker">Punto de partida del diagnostico</span>
+                <label class="problem-title" for="problem">Describe brevemente tu necesidad principal</label>
+                <p class="problem-help">Escribelo en una frase simple. Nosotros interpretamos tu necesidad y mostramos solo preguntas utiles para tu caso.</p>
+              </div>
+              <textarea id="problem" name="problema" required placeholder="Ejemplo: nos llegan mensajes por WhatsApp, pero no tenemos control ni seguimiento de clientes."></textarea>
+              <div class="problem-examples" aria-label="Ejemplos de referencia no seleccionables">
+                <div class="example-card"><strong>Ejemplo</strong><br>Actualmente registramos solicitudes en Excel y queremos un sistema mas rapido y ordenado.</div>
+                <div class="example-card"><strong>Ejemplo</strong><br>Nos llegan mensajes por WhatsApp, pero no tenemos control ni seguimiento de clientes.</div>
+                <div class="example-card"><strong>Ejemplo</strong><br>Queremos automatizar tareas manuales y tener reportes claros del proceso.</div>
+              </div>
             </div>
           </div>
           <div class="guided-diagnostic" id="guidedDiagnostic" aria-live="polite"></div>
-          <div class="preliminary-route" id="preliminaryRoute"></div>          <label class="consent">
+          <div class="preliminary-route" id="preliminaryRoute"></div>
+          <label class="consent">
             <input type="checkbox" name="acepta_contacto" required>
             <span>Autorizo a ADVISERS PERU a contactarme para atender esta solicitud de diagnóstico, cotización o soporte.</span>
           </label>
@@ -1252,6 +1334,8 @@
     const guidedContainer = document.getElementById('guidedDiagnostic');
     const preliminaryRoute = document.getElementById('preliminaryRoute');
     const serviceSelect = document.getElementById('service');
+    const problemInput = document.getElementById('problem');
+    const problemField = document.getElementById('problemField');
     const webhookUrl = 'https://n8n-n8n.sdb2lb.easypanel.host/webhook/lead-landing';
     const catalogUrl = 'https://os.advper.cloud/api/public/service-catalog/diagnostic-options';
     const pageParams = new URLSearchParams(window.location.search);
@@ -1354,24 +1438,128 @@
         || fallbackCatalog[4];
     }
 
+    function normalizeText(value) {
+      return cleanFormValue(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    }
+
+    const questionIntentRules = [
+      { label: 'Atención por WhatsApp', keywords: ['whatsapp', 'mensaje', 'mensajes', 'chat', 'consulta', 'consultas', 'responder', 'atencion', 'derivar', 'horario'], codes: ['bot_first_need', 'daily_requests', 'handoff', 'automation_process', 'automation_tools'] },
+      { label: 'Registro y control operativo', keywords: ['excel', 'hoja', 'registro', 'registramos', 'ordenar', 'control', 'seguimiento', 'historial', 'base de datos'], codes: ['crm_control', 'crm_result', 'internal_features', 'internal_area', 'dashboard_measure'] },
+      { label: 'Tickets y responsables', keywords: ['ticket', 'tickets', 'sla', 'reclamo', 'reclamos', 'soporte', 'responsable', 'estado', 'estados', 'tiempo', 'tiempos'], codes: ['crm_control', 'crm_users', 'crm_result', 'team_size', 'internal_features'] },
+      { label: 'Automatización de tareas', keywords: ['automatizar', 'automatizacion', 'n8n', 'integrar', 'integracion', 'manual', 'repetitivo', 'tarea', 'tareas', 'alerta'], codes: ['automation_process', 'automation_tools', 'automation_frequency', 'internal_features', 'solution_level'] },
+      { label: 'Sistema interno por módulos', keywords: ['sistema interno', 'plataforma', 'modulo', 'modulos', 'usuarios', 'permisos', 'flujo', 'operacion', 'documentos'], codes: ['internal_area', 'internal_features', 'control_level', 'team_size', 'solution_level'] },
+      { label: 'Reportes e indicadores', keywords: ['reporte', 'reportes', 'dashboard', 'indicador', 'indicadores', 'bi', 'datos', 'gerencia', 'medir', 'metricas'], codes: ['dashboard_measure', 'dashboard_report', 'dashboard_frequency', 'crm_result', 'solution_level'] },
+      { label: 'Ventas y seguimiento comercial', keywords: ['venta', 'ventas', 'lead', 'leads', 'cotizacion', 'cotizaciones', 'cliente', 'clientes', 'oportunidad', 'seguimiento comercial'], codes: ['business_objective', 'crm_control', 'crm_result', 'web_goal', 'web_action'] }
+    ];
+
+    const serviceQuestionPriority = {
+      BOT_WHATSAPP_WEB: ['bot_first_need', 'daily_requests', 'handoff', 'business_objective', 'solution_level'],
+      CRM_TICKETS: ['crm_control', 'crm_result', 'crm_users', 'team_size', 'solution_level'],
+      AUTOMATION_N8N: ['automation_process', 'automation_tools', 'automation_frequency', 'business_objective', 'solution_level'],
+      INTERNAL_SYSTEM: ['internal_area', 'internal_features', 'control_level', 'team_size', 'solution_level'],
+      DIGITAL_DIAGNOSTIC: ['diagnostic_goal', 'diagnostic_area', 'diagnostic_expected_output', 'business_objective', 'solution_level'],
+      COMMERCIAL_WEB: ['web_goal', 'web_action', 'web_content', 'business_objective', 'solution_level'],
+      DASHBOARD_BI: ['dashboard_measure', 'dashboard_report', 'dashboard_frequency', 'business_objective', 'solution_level']
+    };
+
+    let currentDiagnostic = { questions: [], problem_category: 'Necesidad por clarificar', diagnosis_clarity: 'Baja' };
+    let renderTimer;
+
+    function unique(values) {
+      return Array.from(new Set(values.filter(Boolean)));
+    }
+
+    function problemProfile(problem) {
+      const normalized = normalizeText(problem);
+      const matched = questionIntentRules
+        .map((rule) => ({ ...rule, score: rule.keywords.filter((keyword) => normalized.includes(normalizeText(keyword))).length }))
+        .filter((rule) => rule.score > 0)
+        .sort((left, right) => right.score - left.score);
+      const clarity = normalized.length >= 80 || matched.length >= 2 ? 'Alta' : normalized.length >= 35 || matched.length === 1 ? 'Media' : 'Baja';
+      return {
+        problem_category: matched[0]?.label || 'Necesidad por clarificar',
+        diagnosis_clarity: clarity,
+        codes: unique(matched.flatMap((rule) => rule.codes))
+      };
+    }
+
+    function questionScore(question, preferredCodes, problem, service) {
+      const codeIndex = preferredCodes.indexOf(question.question_code);
+      let score = codeIndex >= 0 ? 100 - codeIndex * 5 : 0;
+      const searchable = normalizeText([question.question_code, question.question_text, (question.options || []).map((item) => item.option_label).join(' '), service.name, service.solution_type].join(' '));
+      normalizeText(problem).split(' ').filter((term) => term.length >= 4).forEach((term) => {
+        if (searchable.includes(term)) score += 7;
+      });
+      if (question.question_type === 'SHORT_TEXT') score -= 20;
+      return score;
+    }
+
+    function directedDiagnostic(service, problem) {
+      const profile = problemProfile(problem);
+      const activeQuestions = (service.questions || []).filter((question) => question.active !== false && question.question_type !== 'SHORT_TEXT');
+      const preferredCodes = unique([...(profile.codes || []), ...(serviceQuestionPriority[service.service_code] || ['business_objective', 'solution_level', 'team_size'])]);
+      const limit = profile.diagnosis_clarity === 'Alta' ? 3 : profile.diagnosis_clarity === 'Media' ? 4 : 5;
+      const selected = activeQuestions
+        .map((question) => ({ question, score: questionScore(question, preferredCodes, problem, service) }))
+        .sort((left, right) => right.score - left.score || (left.question.step_order || 0) - (right.question.step_order || 0))
+        .map((item) => item.question)
+        .slice(0, Math.max(2, limit));
+      if (profile.diagnosis_clarity === 'Baja') {
+        ['solution_level', 'business_objective'].forEach((code) => {
+          if (!selected.some((question) => question.question_code === code)) {
+            const fallback = activeQuestions.find((question) => question.question_code === code);
+            if (fallback) selected.unshift(fallback);
+          }
+        });
+      }
+      return { ...profile, questions: selected.slice(0, Math.max(2, limit)) };
+    }
+
+    function selectedAnswerMap() {
+      const map = {};
+      guidedContainer.querySelectorAll('.question-card').forEach((card) => {
+        const selected = card.querySelector('input[type="radio"]:checked');
+        if (selected) map[card.dataset.questionCode] = selected.value;
+      });
+      return map;
+    }
+
+    function escapeHtml(value) {
+      return String(value || '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
+    }
+
     function renderGuidedQuestions() {
       const service = selectedService();
+      const problem = cleanFormValue(problemInput.value);
+      const previousAnswers = selectedAnswerMap();
+      problemField.classList.toggle('has-input', Boolean(problem));
       if (!service || !serviceSelect.value) {
         guidedContainer.innerHTML = '';
         preliminaryRoute.classList.remove('show');
         preliminaryRoute.textContent = '';
+        currentDiagnostic = { questions: [], problem_category: 'Necesidad por clarificar', diagnosis_clarity: 'Baja' };
         return;
       }
+      if (problem.length < 12) {
+        guidedContainer.innerHTML = `
+          <div class="diagnostic-progress"><span>Primero cuéntanos tu necesidad principal</span><span>Luego mostraremos preguntas dirigidas</span></div>
+        `;
+        preliminaryRoute.classList.remove('show');
+        preliminaryRoute.textContent = '';
+        currentDiagnostic = { questions: [], problem_category: 'Necesidad por clarificar', diagnosis_clarity: 'Baja' };
+        return;
+      }
+      currentDiagnostic = directedDiagnostic(service, problem);
       guidedContainer.innerHTML = `
-        <div class="diagnostic-progress"><span>Diagnostico guiado basado en catalogo</span><span>${service.questions.length} preguntas rapidas</span></div>
-        ${service.questions.map((question, index) => `
-          <fieldset class="question-card" data-question-code="${question.question_code}" data-question-text="${question.question_text}">
-            <p class="question-title">${index + 1}. ${question.question_text}</p>
+        <div class="diagnostic-progress"><span>Diagnóstico guiado inteligente</span><span>${currentDiagnostic.questions.length} preguntas dirigidas | ${currentDiagnostic.problem_category} | Claridad ${currentDiagnostic.diagnosis_clarity}</span></div>
+        ${currentDiagnostic.questions.map((question, index) => `
+          <fieldset class="question-card" data-question-code="${escapeHtml(question.question_code)}" data-question-text="${escapeHtml(question.question_text)}">
+            <p class="question-title">${index + 1}. ${escapeHtml(question.question_text)}</p>
             <div class="option-grid">
-              ${question.options.map((option) => `
+              ${(question.options || []).map((option) => `
                 <label class="option-chip">
-                  <input type="radio" name="guided_${question.question_code}" value="${option.option_code}" data-label="${option.option_label}" ${question.required ? 'required' : ''}>
-                  <span>${option.option_label}</span>
+                  <input type="radio" name="guided_${escapeHtml(question.question_code)}" value="${escapeHtml(option.option_code)}" data-label="${escapeHtml(option.option_label)}" ${previousAnswers[question.question_code] === option.option_code ? 'checked' : ''} ${question.required ? 'required' : ''}>
+                  <span>${escapeHtml(option.option_label)}</span>
                 </label>
               `).join('')}
             </div>
@@ -1379,7 +1567,12 @@
         `).join('')}
       `;
       preliminaryRoute.classList.add('show');
-      preliminaryRoute.textContent = service.preliminary_solution_template + ' La ruta final sera validada por ADVISERS PERU.';
+      preliminaryRoute.textContent = service.preliminary_solution_template + ' La ruta final será validada por ADVISERS PERU.';
+    }
+
+    function scheduleRenderGuidedQuestions() {
+      window.clearTimeout(renderTimer);
+      renderTimer = window.setTimeout(renderGuidedQuestions, 260);
     }
 
     function guidedAnswers() {
@@ -1396,35 +1589,43 @@
     }
 
     function buildGuidedOutcome(service, answers, problem, name) {
-      const objective = answers.find((answer) => answer.question_code === 'business_objective')?.selected_option_label || 'Evaluar oportunidad digital';
+      const objective = answers.find((answer) => answer.question_code === 'business_objective')?.selected_option_label || currentDiagnostic.problem_category || 'Evaluar oportunidad digital';
       const team = answers.find((answer) => answer.question_code === 'team_size')?.selected_option_label || 'No indicado';
       const route = service.recommended_next_steps || [];
       const problemSummary = problem || `El cliente busca ${objective.toLowerCase()} con apoyo de ${service.name}.`;
+      const pending = currentDiagnostic.questions.filter((question) => !answers.some((answer) => answer.question_code === question.question_code)).map((question) => question.question_text);
       const customerMessage = [
         `Gracias, ${name}.`,
         '',
-        'Con base en tus respuestas, identificamos esta oportunidad inicial:',
+        'Con base en tu servicio de interés y tus respuestas, identificamos esta oportunidad inicial:',
         '',
         'Problema principal detectado:',
         problemSummary,
         '',
+        'Categoría inicial:',
+        currentDiagnostic.problem_category || 'Necesidad por clarificar',
+        '',
         'Ruta preliminar sugerida:',
         ...route.map((step, index) => `${index + 1}. ${step}`),
         '',
-        'Posible solucion:',
+        'Posible solución:',
         service.preliminary_solution_template,
         '',
         'Siguiente paso:',
-        'Un asesor de ADVISERS PERU revisara tu caso y podra enviarte una propuesta ajustada.',
+        'Un asesor de ADVISERS PERU revisará tu caso y podrá enviarte una propuesta ajustada.',
         '',
-        'La ruta preliminar es una orientacion inicial basada en las respuestas registradas. La propuesta final sera validada por ADVISERS PERU segun alcance, complejidad y condiciones comerciales.',
+        'La ruta preliminar es una orientación inicial basada en las respuestas registradas. La propuesta final será validada por ADVISERS PERU según alcance, complejidad y condiciones comerciales.',
         '',
         'ADVISERS PERU',
         'ASISTE. INNOVA. CRECE.'
       ].join('\n');
       return {
         problem_summary: problemSummary,
-        opportunity_summary: `Servicio: ${service.name}. Objetivo: ${objective}. Participantes: ${team}.`,
+        problem_category: currentDiagnostic.problem_category || 'Necesidad por clarificar',
+        diagnosis_clarity: currentDiagnostic.diagnosis_clarity || 'Baja',
+        apparent_solution: service.name,
+        pending_questions: pending,
+        opportunity_summary: `Servicio: ${service.name}. Categoria: ${currentDiagnostic.problem_category}. Claridad: ${currentDiagnostic.diagnosis_clarity}. Objetivo: ${objective}. Participantes: ${team}.`,
         preliminary_solution: service.preliminary_solution_template,
         suggested_solution_type: service.name,
         recommended_roles: service.recommended_roles || [],
@@ -1434,7 +1635,7 @@
     }
 
     serviceSelect.addEventListener('change', renderGuidedQuestions);
-
+    problemInput.addEventListener('input', scheduleRenderGuidedQuestions);
     fetch(catalogUrl)
       .then((response) => response.ok ? response.json() : null)
       .then((data) => {
@@ -1483,8 +1684,9 @@
         showFormMessage('Completa nombre, empresa, WhatsApp o correo, el problema principal y acepta el contacto.', 'error');
         return;
       }
-      if (!payload.servicio_interes || answers.length < 3) {
-        showFormMessage('Selecciona un servicio y responde las preguntas guiadas para recibir una ruta preliminar.', 'error');
+      const minimumAnswers = Math.min(3, Math.max(2, currentDiagnostic.questions.length));
+      if (!payload.servicio_interes || answers.length < minimumAnswers) {
+        showFormMessage(`Selecciona un servicio y responde al menos ${minimumAnswers} preguntas dirigidas para recibir una ruta preliminar.`, 'error');
         return;
       }
 
