@@ -709,6 +709,7 @@
       padding: 14px;
       color: #134e4a;
       font-size: 14px;
+      white-space: pre-line;
     }
 
     .preliminary-route.show { display: block; }
@@ -1588,12 +1589,43 @@
       }).filter((answer) => answer.selected_option_label || answer.answer_text);
     }
 
+    function buildImradSummary(service, answers, problem) {
+      const objective = answers.find((answer) => answer.question_code === 'business_objective')?.selected_option_label || currentDiagnostic.problem_category || 'Evaluar oportunidad digital';
+      const route = service.recommended_next_steps || [];
+      const firstStep = route[0] || 'Revisar el caso con ADVISERS PERU.';
+      return {
+        introduction: problem || `El cliente busca ${objective.toLowerCase()} con apoyo de ${service.name}.`,
+        method: `Se reviso el servicio ${service.name}, el problema descrito y ${answers.length} respuestas del diagnostico guiado para construir una orientacion preliminar.`,
+        result: firstStep,
+        discussion: 'Esta es una orientacion inicial. Un asesor de ADVISERS PERU revisara el caso y podra enviarte una propuesta ajustada.'
+      };
+    }
+
+    function formatImradForScreen(imrad) {
+      return [
+        'Resumen preliminar IMRaD',
+        '',
+        'INTRODUCCION',
+        imrad.introduction,
+        '',
+        'METODO',
+        imrad.method,
+        '',
+        'RESULTADO',
+        imrad.result,
+        '',
+        'DISCUSION',
+        imrad.discussion
+      ].join('\n');
+    }
+
     function buildGuidedOutcome(service, answers, problem, name) {
       const objective = answers.find((answer) => answer.question_code === 'business_objective')?.selected_option_label || currentDiagnostic.problem_category || 'Evaluar oportunidad digital';
       const team = answers.find((answer) => answer.question_code === 'team_size')?.selected_option_label || 'No indicado';
       const route = service.recommended_next_steps || [];
       const problemSummary = problem || `El cliente busca ${objective.toLowerCase()} con apoyo de ${service.name}.`;
       const pending = currentDiagnostic.questions.filter((question) => !answers.some((answer) => answer.question_code === question.question_code)).map((question) => question.question_text);
+      const imradSummary = buildImradSummary(service, answers, problemSummary);
       const customerMessage = [
         `Gracias, ${name}.`,
         '',
@@ -1623,6 +1655,7 @@
         problem_summary: problemSummary,
         problem_category: currentDiagnostic.problem_category || 'Necesidad por clarificar',
         diagnosis_clarity: currentDiagnostic.diagnosis_clarity || 'Baja',
+        imrad_summary: imradSummary,
         apparent_solution: service.name,
         pending_questions: pending,
         opportunity_summary: `Servicio: ${service.name}. Categoria: ${currentDiagnostic.problem_category}. Claridad: ${currentDiagnostic.diagnosis_clarity}. Objetivo: ${objective}. Participantes: ${team}.`,
@@ -1656,6 +1689,7 @@
       const data = new FormData(form);
       const service = selectedService();
       const answers = guidedAnswers();
+      const guidedOutcome = buildGuidedOutcome(service, answers, cleanFormValue(data.get('problema')), cleanFormValue(data.get('nombre')));
       const payload = {
         nombre: cleanFormValue(data.get('nombre')),
         empresa: cleanFormValue(data.get('empresa')),
@@ -1671,7 +1705,8 @@
         service_catalog_item_id: service.service_catalog_item_id || null,
         service_code: service.service_code,
         guided_answers: answers,
-        guided_outcome: buildGuidedOutcome(service, answers, cleanFormValue(data.get('problema')), cleanFormValue(data.get('nombre'))),
+        guided_outcome: guidedOutcome,
+        imrad_summary: guidedOutcome.imrad_summary,
         diagnostic_version: diagnosticVersion,
         consent_status: consentCheckbox instanceof HTMLInputElement && consentCheckbox.checked ? 'Si' : 'No',
         preliminary_solution: service.preliminary_solution_template,
@@ -1702,7 +1737,7 @@
         });
         if (!response.ok) throw new Error('Webhook response: ' + response.status);
         preliminaryRoute.classList.add('show');
-        preliminaryRoute.textContent = payload.guided_outcome.customer_message;
+        preliminaryRoute.textContent = formatImradForScreen(payload.imrad_summary);
         showFormMessage('Solicitud registrada correctamente. Un asesor de ADVISERS PERU se comunicara contigo.', 'success');
         form.reset();
         guidedContainer.innerHTML = '';
