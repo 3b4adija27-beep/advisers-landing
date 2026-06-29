@@ -160,7 +160,15 @@ Incluye:
 
 No se exponen tokens, API keys ni claves. El webhook n8n sigue siendo el unico destino del formulario.
 
-MVP v1.3.3 agrega confirmacion preliminar IMRaD en pantalla. La landing genera un resumen corto con `INTRODUCCION`, `METODO`, `RESULTADO` y `DISCUSION`, lo muestra despues de registrar la solicitud y lo envia en el payload como `imrad_summary` y dentro de `guided_outcome.imrad_summary`.
+La landing mantiene `imrad_summary` en el payload para analisis interno de ADVISERS IA OS, pero el visitante ya no ve titulos IMRaD. Despues de registrar la solicitud se muestra una frase comercial y un cuadro compacto llamado `Diagnostico preliminar y plan de accion`.
+
+`guided_outcome` tambien incluye:
+
+- `customer_narrative_summary`
+- `customer_action_plan_rows`
+- `customer_message`
+
+Cada fila de `customer_action_plan_rows` contiene `etapa`, `ruta_propuesta` y `beneficio_esperado`.
 
 La landing no envia WhatsApp ni correo al cliente. ADVISERS IA OS recibe el lead desde n8n, valida consentimiento y contacto, y prepara `OutboundDelivery` en estado `Pending` para que los workers n8n realicen el envio con trazabilidad.
 
