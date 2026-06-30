@@ -1709,6 +1709,21 @@
       `;
     }
 
+    function renderFinalConfirmation(payload) {
+      const contactNotice = payload.acepta_contacto
+        ? 'Como autorizaste el contacto, un asesor de ADVISERS PERU podra comunicarse contigo para validar alcance, complejidad y siguientes pasos.'
+        : 'No registramos autorizacion de contacto. ADVISERS PERU no debe contactarte hasta contar con autorizacion valida.';
+      const nextStep = payload.guided_outcome?.next_step || 'Revisar caso con ADVISERS PERU.';
+      return `
+        <div class="diagnostic-progress"><span>Solicitud registrada</span><span>Diagnostico preliminar conservado</span></div>
+        ${renderCustomerActionPlan(payload.nombre, payload.guided_outcome.customer_action_plan_rows)}
+        <div class="diagnostic-close">
+          <strong>Proximos pasos:</strong> ${escapeHtml(nextStep)}
+          <br>${escapeHtml(contactNotice)}
+        </div>
+      `;
+    }
+
     function customerMessageText(name, rows) {
       return [
         customerNarrative(name),
@@ -1779,6 +1794,7 @@
       const service = selectedService();
       const answers = guidedAnswers();
       const guidedOutcome = buildGuidedOutcome(service, answers, cleanFormValue(data.get('problema')), cleanFormValue(data.get('nombre')));
+      const contactConsent = consentCheckbox instanceof HTMLInputElement && consentCheckbox.checked;
       const payload = {
         nombre: cleanFormValue(data.get('nombre')),
         empresa: cleanFormValue(data.get('empresa')),
@@ -1787,7 +1803,12 @@
         servicio_interes: cleanFormValue(data.get('servicio_interes')),
         urgencia: cleanFormValue(data.get('urgencia')),
         problema: cleanFormValue(data.get('problema')),
-        acepta_contacto: consentCheckbox instanceof HTMLInputElement && consentCheckbox.checked,
+        acepta_contacto: contactConsent,
+        consent: contactConsent,
+        accepted_contact: contactConsent,
+        accepts_contact: contactConsent,
+        contact_consent: contactConsent,
+        consent_to_contact: contactConsent,
         origen: cleanFormValue(data.get('origen')) || 'Landing ADVISERS PERU',
         source_channel: 'WEB_FORM',
         source_platform: 'Landing ADVISERS PERU',
@@ -1797,8 +1818,11 @@
         guided_outcome: guidedOutcome,
         imrad_summary: guidedOutcome.imrad_summary,
         diagnostic_version: diagnosticVersion,
-        consent_status: consentCheckbox instanceof HTMLInputElement && consentCheckbox.checked ? 'Si' : 'No',
+        consent_status: contactConsent ? 'Si' : 'No',
         preliminary_solution: service.preliminary_solution_template,
+        customer_narrative_summary: guidedOutcome.customer_narrative_summary,
+        customer_message: guidedOutcome.customer_message,
+        diagnostic_summary: guidedOutcome.customer_message,
         campaign_source: campaignValue(data, 'campaign_source', 'utm_source'),
         campaign_medium: campaignValue(data, 'campaign_medium', 'utm_medium'),
         campaign_name: campaignValue(data, 'campaign_name', 'utm_campaign')
@@ -1826,8 +1850,8 @@
         });
         if (!response.ok) throw new Error('Webhook response: ' + response.status);
         preliminaryRoute.classList.add('show');
-        preliminaryRoute.innerHTML = renderCustomerActionPlan(payload.nombre, payload.guided_outcome.customer_action_plan_rows);
-        showFormMessage('Solicitud registrada correctamente. Un asesor de ADVISERS PERU se comunicara contigo.', 'success');
+        preliminaryRoute.innerHTML = renderFinalConfirmation(payload);
+        showFormMessage('Solicitud registrada correctamente. Conservamos tu diagnostico preliminar y plan de accion para revision de ADVISERS PERU.', 'success');
         form.reset();
         guidedContainer.innerHTML = '';
       } catch (error) {

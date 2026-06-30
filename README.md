@@ -226,3 +226,17 @@ Si ese endpoint no responde, mantiene fallback local para no bloquear la captaci
 5. Enviar un formulario y confirmar que el POST sigue yendo solo al webhook n8n `/webhook/lead-landing`.
 
 No se exponen tokens, claves ni conexion directa de la landing a endpoints privados de ADVISERS IA OS.
+
+## Hotfix P0 - Confirmacion final y consentimiento robusto
+
+Despues de enviar el formulario, la landing muestra una confirmacion final con solicitud registrada, diagnostico preliminar, plan de accion, proximos pasos y aviso de contacto. El POST sigue saliendo solo hacia el webhook productivo n8n.
+
+El payload envia `acepta_contacto` como booleano real y aliases compatibles para evitar perdida de consentimiento en mapeos intermedios:
+
+- `consent`
+- `accepted_contact`
+- `accepts_contact`
+- `contact_consent`
+- `consent_to_contact`
+
+Tambien envia `customer_message`, `diagnostic_summary` y `customer_narrative_summary` para que ADVISERS IA OS pueda conservar el resumen visible al cliente y preparar la entrega WhatsApp con trazabilidad.
