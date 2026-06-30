@@ -210,3 +210,19 @@ Validacion sugerida:
 - Cambiar a `Bot WhatsApp / Web` y escribir: `Nos llegan mensajes por WhatsApp y no tenemos seguimiento`.
 - Confirmar que aparecen preguntas sobre volumen, derivacion y automatizacion.
 - Enviar el formulario y revisar en Network que el payload incluya `guided_answers`, `guided_outcome.problem_category`, `guided_outcome.diagnosis_clarity`, `source_channel=WEB_FORM` y `service_code`.
+
+## Sprint Correctivo 01 - Catalogo real y UTF-8
+
+La landing consume el catalogo publico real de ADVISERS IA OS desde:
+
+    https://os.advper.cloud/api/public/service-catalog/diagnostic-options
+
+Si ese endpoint no responde, mantiene fallback local para no bloquear la captacion. La validacion en navegador debe confirmar:
+
+1. Abrir DevTools > Network.
+2. Recargar la landing.
+3. Ver una solicitud GET a `/api/public/service-catalog/diagnostic-options`.
+4. Confirmar respuesta JSON `ok: true` sin redireccion a `/login`.
+5. Enviar un formulario y confirmar que el POST sigue yendo solo al webhook n8n `/webhook/lead-landing`.
+
+No se exponen tokens, claves ni conexion directa de la landing a endpoints privados de ADVISERS IA OS.
