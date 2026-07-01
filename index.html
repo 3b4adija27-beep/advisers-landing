@@ -1397,7 +1397,11 @@
     const webhookUrl = 'https://n8n-n8n.sdb2lb.easypanel.host/webhook/lead-landing';
     const catalogUrl = 'https://os.advper.cloud/api/public/service-catalog/diagnostic-options';
     const pageParams = new URLSearchParams(window.location.search);
-    const diagnosticVersion = 'MVP v1.3';
+    const diagnosticVersion = 'landing-diagnostico-v2';
+    const consentText = 'Autorizo a ADVISERS PERU a contactarme para atender esta solicitud de diagnóstico, cotización o soporte.';
+    const consentSource = 'advper.cloud';
+    const consentChannel = 'WEB_FORM';
+    const consentPolicyVersion = 'privacy-advisers-v1';
 
     const fallbackCatalog = [
       service('BOT_WHATSAPP_WEB', 'Bot WhatsApp / Web', 'Atencion automatizada, registro de leads y derivacion humana.', 'Bot WhatsApp / Web + registro de leads + seguimiento.', ['Mapear consultas frecuentes', 'Definir derivacion humana', 'Registrar leads y seguimiento'], ['ADVISER-BUSINESS', 'ADVISER-AUTOMATION', 'ADVISER-CORE', 'ADVISER-DATA', 'ADVISER-QA', 'ADVISER-POSTVENTA'], [
@@ -1625,7 +1629,7 @@
         `).join('')}
       `;
       preliminaryRoute.classList.add('show');
-      preliminaryRoute.innerHTML = renderCustomerActionPlan('', buildCustomerActionPlanRows(service, service.recommended_next_steps || [], problem));
+      preliminaryRoute.innerHTML = renderOrientativePreview(buildCustomerActionPlanRows(service, service.recommended_next_steps || [], problem));
     }
 
     function scheduleRenderGuidedQuestions() {
@@ -1709,6 +1713,27 @@
       `;
     }
 
+    function renderOrientativePreview(rows) {
+      const safeRows = (rows || []).slice(0, 4);
+      return `
+        <p class="diagnostic-intro">Vista orientativa previa. La landing solo orienta y registra; ADVISERS IA OS será la fuente oficial del caso después del envío.</p>
+        <div class="action-plan-box">
+          <div class="action-plan-title">Resumen previo orientativo</div>
+          <table class="action-plan-table">
+            <thead><tr><th>Etapa</th><th>Ruta probable</th><th>Beneficio esperado</th></tr></thead>
+            <tbody>${safeRows.map((row) => `
+              <tr>
+                <td>${escapeHtml(row.etapa)}</td>
+                <td>${escapeHtml(row.ruta_propuesta)}</td>
+                <td>${escapeHtml(row.beneficio_esperado)}</td>
+              </tr>
+            `).join('')}</tbody>
+          </table>
+        </div>
+        <p class="diagnostic-close">Este resumen no es definitivo. ADVISERS IA OS registrará el caso y ADVISERS PERU revisará el diagnóstico después de enviar la solicitud.</p>
+      `;
+    }
+
     function renderFinalConfirmation(payload) {
       const contactNotice = payload.acepta_contacto
         ? 'Como autorizaste el contacto, un asesor de ADVISERS PERU podra comunicarse contigo para validar alcance, complejidad y siguientes pasos.'
@@ -1720,6 +1745,7 @@
         <div class="diagnostic-close">
           <strong>Proximos pasos:</strong> ${escapeHtml(nextStep)}
           <br>${escapeHtml(contactNotice)}
+          <br>Tu solicitud fue registrada. ADVISERS IA OS conservará el caso como fuente oficial y ADVISERS PERU revisará el diagnóstico antes de cualquier siguiente paso. Podremos contactarte solo si autorizaste el contacto.
         </div>
       `;
     }
@@ -1795,6 +1821,7 @@
       const answers = guidedAnswers();
       const guidedOutcome = buildGuidedOutcome(service, answers, cleanFormValue(data.get('problema')), cleanFormValue(data.get('nombre')));
       const contactConsent = consentCheckbox instanceof HTMLInputElement && consentCheckbox.checked;
+      const consentTimestampClient = new Date().toISOString();
       const payload = {
         nombre: cleanFormValue(data.get('nombre')),
         empresa: cleanFormValue(data.get('empresa')),
@@ -1809,6 +1836,16 @@
         accepts_contact: contactConsent,
         contact_consent: contactConsent,
         consent_to_contact: contactConsent,
+        consent_text: consentText,
+        consent_source: consentSource,
+        consent_channel: consentChannel,
+        consent_form_version: diagnosticVersion,
+        consent_policy_version: consentPolicyVersion,
+        consent_timestamp_client: consentTimestampClient,
+        form_version: diagnosticVersion,
+        landing_version: diagnosticVersion,
+        privacy_policy_version: consentPolicyVersion,
+        fecha: consentTimestampClient,
         origen: cleanFormValue(data.get('origen')) || 'Landing ADVISERS PERU',
         source_channel: 'WEB_FORM',
         source_platform: 'Landing ADVISERS PERU',
@@ -1818,7 +1855,7 @@
         guided_outcome: guidedOutcome,
         imrad_summary: guidedOutcome.imrad_summary,
         diagnostic_version: diagnosticVersion,
-        consent_status: contactConsent ? 'Si' : 'No',
+        consent_status: contactConsent ? 'Sí' : 'No',
         preliminary_solution: service.preliminary_solution_template,
         customer_narrative_summary: guidedOutcome.customer_narrative_summary,
         customer_message: guidedOutcome.customer_message,
@@ -1851,7 +1888,7 @@
         if (!response.ok) throw new Error('Webhook response: ' + response.status);
         preliminaryRoute.classList.add('show');
         preliminaryRoute.innerHTML = renderFinalConfirmation(payload);
-        showFormMessage('Solicitud registrada correctamente. Conservamos tu diagnostico preliminar y plan de accion para revision de ADVISERS PERU.', 'success');
+        showFormMessage('Solicitud registrada correctamente. ADVISERS IA OS conservara el caso como fuente oficial para revision de ADVISERS PERU.', 'success');
         form.reset();
         guidedContainer.innerHTML = '';
       } catch (error) {
