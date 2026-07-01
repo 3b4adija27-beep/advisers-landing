@@ -1292,7 +1292,7 @@
           <div class="guided-diagnostic" id="guidedDiagnostic" aria-live="polite"></div>
           <div class="preliminary-route" id="preliminaryRoute"></div>
           <label class="consent">
-            <input type="checkbox" name="acepta_contacto" required>
+            <input type="checkbox" name="acepta_contacto">
             <span>Autorizo a ADVISERS PERU a contactarme para atender esta solicitud de diagnóstico, cotización o soporte.</span>
           </label>
           <input type="hidden" name="origen" value="Landing ADVISERS PERU">
@@ -1346,7 +1346,7 @@
             </div>
           </div>
           <button class="btn btn-whatsapp" type="button" data-open-chat>Hablar por WhatsApp</button>
-          <p class="privacy">Aviso: al enviar tus datos autorizas a ADVISERS PERU a contactarte para atender tu solicitud. No solicitamos contrasenas ni datos sensibles en el primer contacto.</p>
+          <p class="privacy">Aviso: si marcas la autorizacion de contacto, ADVISERS PERU podra comunicarse contigo para atender tu solicitud. No solicitamos contrasenas ni datos sensibles en el primer contacto.</p>
         </aside>
       </div>
     </section>
@@ -1828,8 +1828,8 @@
         campaign_name: campaignValue(data, 'campaign_name', 'utm_campaign')
       };
 
-      if (!payload.nombre || !payload.empresa || (!payload.whatsapp && !payload.correo) || !payload.problema || !payload.acepta_contacto) {
-        showFormMessage('Completa nombre, empresa, WhatsApp o correo, el problema principal y acepta el contacto.', 'error');
+      if (!payload.nombre || !payload.empresa || (!payload.whatsapp && !payload.correo) || !payload.problema) {
+        showFormMessage('Completa nombre, empresa, WhatsApp o correo y el problema principal.', 'error');
         return;
       }
       const minimumAnswers = Math.min(3, Math.max(2, currentDiagnostic.questions.length));

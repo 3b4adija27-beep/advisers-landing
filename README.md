@@ -98,7 +98,7 @@ No se requieren variables de entorno.
 
 1. Abre la landing desplegada.
 2. Completa nombre, empresa, problema y al menos WhatsApp o correo.
-3. Marca la autorización de contacto.
+3. Marca la autorización de contacto si deseas que ADVISERS PERU pueda comunicarse contigo automáticamente.
 4. Presiona **Registrar solicitud**.
 5. Verifica el mensaje de confirmación en pantalla.
 6. En n8n, confirma una ejecución exitosa de `WF-LEAD-LANDING` y revisa el JSON recibido, incluyendo `origen`, `campaign_source`, `campaign_medium` y `campaign_name`.
@@ -231,7 +231,7 @@ No se exponen tokens, claves ni conexion directa de la landing a endpoints priva
 
 Despues de enviar el formulario, la landing muestra una confirmacion final con solicitud registrada, diagnostico preliminar, plan de accion, proximos pasos y aviso de contacto. El POST sigue saliendo solo hacia el webhook productivo n8n.
 
-El payload envia `acepta_contacto` como booleano real y aliases compatibles para evitar perdida de consentimiento en mapeos intermedios:
+El payload envia `acepta_contacto` como booleano real (`true` o `false`) y aliases compatibles para evitar perdida de consentimiento en mapeos intermedios:
 
 - `consent`
 - `accepted_contact`
@@ -240,3 +240,5 @@ El payload envia `acepta_contacto` como booleano real y aliases compatibles para
 - `consent_to_contact`
 
 Tambien envia `customer_message`, `diagnostic_summary` y `customer_narrative_summary` para que ADVISERS IA OS pueda conservar el resumen visible al cliente y preparar la entrega WhatsApp con trazabilidad.
+
+Si el visitante no marca la autorizacion, la landing envia `acepta_contacto: false`; ADVISERS IA OS debe registrar `Acepta contacto: No` y no preparar WhatsApp automatico al cliente.
