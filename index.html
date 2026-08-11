@@ -1325,7 +1325,7 @@
 <body>
   <header class="topbar">
     <nav class="nav" aria-label="Navegacion principal">
-      <a class="brand" href="#inicio" aria-label="ADVISERS PERU inicio">
+      <a class="brand" href="#inicio" aria-label="ADVPER inicio">
         <img class="brand-logo" src="assets/brand/advisers-logo.png" alt="ADVPER">
         <span class="brand-text">
           <strong>ADVPER</strong>
@@ -1446,7 +1446,7 @@
         </div>
         <div class="architecture-grid">
           <article class="architecture-panel primary">
-            <h3>ADVISERS CORE</h3>
+            <h3>ADVPER CORE</h3>
             <p>Entorno matriz para web institucional, bot comercial, CRM interno, leads, clientes, proyectos, plantillas, documentacion, monitoreo y marketing digital propio.</p>
             <ul class="env-list">
               <li>Base <span>advisers_core</span></li>
@@ -1555,9 +1555,9 @@
           <div class="preliminary-route" id="preliminaryRoute"></div>
           <label class="consent">
             <input type="checkbox" name="acepta_contacto">
-            <span>Autorizo a ADVISERS PERU a contactarme para atender esta solicitud de diagnóstico, cotización o soporte.</span>
+            <span>Autorizo a ADVPER a contactarme para atender esta solicitud de diagnóstico, cotización o soporte.</span>
           </label>
-          <input type="hidden" name="origen" value="Landing ADVISERS PERU">
+          <input type="hidden" name="origen" value="Landing ADVPER">
           <input type="hidden" name="campaign_source" value="">
           <input type="hidden" name="campaign_medium" value="">
           <input type="hidden" name="campaign_name" value="">
@@ -1608,7 +1608,7 @@
             </div>
           </div>
           <button class="btn btn-whatsapp" type="button" data-open-chat>Hablar por WhatsApp</button>
-          <p class="privacy">Aviso: si marcas la autorizacion de contacto, ADVISERS PERU podra comunicarse contigo para atender tu solicitud. No solicitamos contrasenas ni datos sensibles en el primer contacto.</p>
+          <p class="privacy">Aviso: si marcas la autorizacion de contacto, ADVPER podra comunicarse contigo para atender tu solicitud. No solicitamos contrasenas ni datos sensibles en el primer contacto.</p>
         </aside>
       </div>
     </section>
@@ -1660,7 +1660,7 @@
     const catalogUrl = 'https://os.advper.cloud/api/public/service-catalog/diagnostic-options';
     const pageParams = new URLSearchParams(window.location.search);
     const diagnosticVersion = 'landing-diagnostico-v2';
-    const consentText = 'Autorizo a ADVISERS PERU a contactarme para atender esta solicitud de diagnóstico, cotización o soporte.';
+    const consentText = 'Autorizo a ADVPER a contactarme para atender esta solicitud de diagnóstico, cotización o soporte.';
     const consentSource = 'advper.cloud';
     const consentChannel = 'WEB_FORM';
     const consentPolicyVersion = 'privacy-advisers-v1';
@@ -1915,12 +1915,12 @@
     function buildImradSummary(service, answers, problem) {
       const objective = answers.find((answer) => answer.question_code === 'business_objective')?.selected_option_label || currentDiagnostic.problem_category || 'Evaluar oportunidad digital';
       const route = service.recommended_next_steps || [];
-      const firstStep = route[0] || 'Revisar el caso con ADVISERS PERU.';
+      const firstStep = route[0] || 'Revisar el caso con ADVPER.';
       return {
         introduction: problem || `El cliente busca ${objective.toLowerCase()} con apoyo de ${service.name}.`,
         method: `Se reviso el servicio ${service.name}, el problema descrito y ${answers.length} respuestas del diagnostico guiado para construir una orientacion preliminar.`,
         result: firstStep,
-        discussion: 'Esta es una orientacion inicial. Un asesor de ADVISERS PERU revisara el caso y podra enviarte una propuesta ajustada.'
+        discussion: 'Esta es una orientacion inicial. Un asesor de ADVPER revisara el caso y podra enviarte una propuesta ajustada.'
       };
     }
 
@@ -1929,7 +1929,7 @@
       return [
         {
           etapa: 'Situacion actual',
-          ruta_propuesta: problemSummary || 'Necesidad inicial por validar con ADVISERS PERU.',
+          ruta_propuesta: problemSummary || 'Necesidad inicial por validar con ADVPER.',
           beneficio_esperado: 'Identificar cuellos de botella y oportunidades de mejora.'
         },
         {
@@ -1944,7 +1944,7 @@
         },
         {
           etapa: 'Proximos pasos',
-          ruta_propuesta: 'Un asesor de ADVISERS PERU revisara el caso.',
+          ruta_propuesta: 'Un asesor de ADVPER revisara el caso.',
           beneficio_esperado: 'Validar alcance, complejidad y propuesta ajustada.'
         }
       ];
@@ -1971,14 +1971,14 @@
             `).join('')}</tbody>
           </table>
         </div>
-        <p class="diagnostic-close">Esta es una orientacion inicial. La propuesta final sera validada por ADVISERS PERU segun alcance, complejidad y condiciones comerciales.</p>
+        <p class="diagnostic-close">Esta es una orientacion inicial. La propuesta final sera validada por ADVPER segun alcance, complejidad y condiciones comerciales.</p>
       `;
     }
 
     function renderOrientativePreview(rows) {
       const safeRows = (rows || []).slice(0, 4);
       return `
-        <p class="diagnostic-intro">Vista orientativa previa. La landing solo orienta y registra; ADVISERS IA OS será la fuente oficial del caso después del envío.</p>
+        <p class="diagnostic-intro">Vista orientativa previa. La landing solo orienta y registra; ADVPER IA OS será la fuente oficial del caso después del envío.</p>
         <div class="action-plan-box">
           <div class="action-plan-title">Resumen previo orientativo</div>
           <table class="action-plan-table">
@@ -1992,22 +1992,22 @@
             `).join('')}</tbody>
           </table>
         </div>
-        <p class="diagnostic-close">Este resumen no es definitivo. ADVISERS IA OS registrará el caso y ADVISERS PERU revisará el diagnóstico después de enviar la solicitud.</p>
+        <p class="diagnostic-close">Este resumen no es definitivo. ADVPER IA OS registrará el caso y ADVPER revisará el diagnóstico después de enviar la solicitud.</p>
       `;
     }
 
     function renderFinalConfirmation(payload) {
       const contactNotice = payload.acepta_contacto
-        ? 'Como autorizaste el contacto, un asesor de ADVISERS PERU podra comunicarse contigo para validar alcance, complejidad y siguientes pasos.'
-        : 'No registramos autorizacion de contacto. ADVISERS PERU no debe contactarte hasta contar con autorizacion valida.';
-      const nextStep = payload.guided_outcome?.next_step || 'Revisar caso con ADVISERS PERU.';
+        ? 'Como autorizaste el contacto, un asesor de ADVPER podra comunicarse contigo para validar alcance, complejidad y siguientes pasos.'
+        : 'No registramos autorizacion de contacto. ADVPER no debe contactarte hasta contar con autorizacion valida.';
+      const nextStep = payload.guided_outcome?.next_step || 'Revisar caso con ADVPER.';
       return `
         <div class="diagnostic-progress"><span>Solicitud registrada</span><span>Diagnostico preliminar conservado</span></div>
         ${renderCustomerActionPlan(payload.nombre, payload.guided_outcome.customer_action_plan_rows)}
         <div class="diagnostic-close">
           <strong>Proximos pasos:</strong> ${escapeHtml(nextStep)}
           <br>${escapeHtml(contactNotice)}
-          <br>Tu solicitud fue registrada. ADVISERS IA OS conservará el caso como fuente oficial y ADVISERS PERU revisará el diagnóstico antes de cualquier siguiente paso. Podremos contactarte solo si autorizaste el contacto.
+          <br>Tu solicitud fue registrada. ADVPER IA OS conservará el caso como fuente oficial y ADVPER revisará el diagnóstico antes de cualquier siguiente paso. Podremos contactarte solo si autorizaste el contacto.
         </div>
       `;
     }
@@ -2024,9 +2024,9 @@
           `Beneficio esperado: ${row.beneficio_esperado}`,
           ''
         ]),
-        'Esta es una orientacion inicial. La propuesta final sera validada por ADVISERS PERU segun alcance, complejidad y condiciones comerciales.',
+        'Esta es una orientacion inicial. La propuesta final sera validada por ADVPER segun alcance, complejidad y condiciones comerciales.',
         '',
-        'ADVISERS PERU',
+        'ADVPER',
         'ASISTE. INNOVA. CRECE.'
       ].join('\n').trim();
     }
@@ -2052,7 +2052,7 @@
         preliminary_solution: service.preliminary_solution_template,
         suggested_solution_type: service.name,
         recommended_roles: service.recommended_roles || [],
-        next_step: route[0] || 'Revisar caso con ADVISERS PERU.',
+        next_step: route[0] || 'Revisar caso con ADVPER.',
         customer_narrative_summary: customerNarrativeSummary,
         customer_action_plan_rows: actionPlanRows,
         customer_message: customerMessage
@@ -2108,9 +2108,9 @@
         landing_version: diagnosticVersion,
         privacy_policy_version: consentPolicyVersion,
         fecha: consentTimestampClient,
-        origen: cleanFormValue(data.get('origen')) || 'Landing ADVISERS PERU',
+        origen: cleanFormValue(data.get('origen')) || 'Landing ADVPER',
         source_channel: 'WEB_FORM',
-        source_platform: 'Landing ADVISERS PERU',
+        source_platform: 'Landing ADVPER',
         service_catalog_item_id: service.service_catalog_item_id || null,
         service_code: service.service_code,
         guided_answers: answers,
@@ -2150,7 +2150,7 @@
         if (!response.ok) throw new Error('Webhook response: ' + response.status);
         preliminaryRoute.classList.add('show');
         preliminaryRoute.innerHTML = renderFinalConfirmation(payload);
-        showFormMessage('Solicitud registrada correctamente. ADVISERS IA OS conservara el caso como fuente oficial para revision de ADVISERS PERU.', 'success');
+        showFormMessage('Solicitud registrada correctamente. ADVPER IA OS conservara el caso como fuente oficial para revision de ADVPER.', 'success');
         form.reset();
         guidedContainer.innerHTML = '';
       } catch (error) {
