@@ -1321,6 +1321,10 @@
       }
     }
   </style>
+<style>
+/* ADVPER IA suite assistant */
+.advper-assistant-widget{position:fixed;right:16px;bottom:16px;z-index:1000;display:flex;flex-direction:column;align-items:flex-end;gap:8px;font-family:Inter,ui-sans-serif,system-ui,sans-serif}.advper-assistant-trigger{display:flex;align-items:center;gap:8px;border:1px solid #19c6b3;border-radius:999px;background:#082b40;color:#fff;padding:7px 12px 7px 7px;box-shadow:0 10px 26px rgba(3,30,45,.2);font-size:12px;font-weight:700;cursor:pointer}.advper-assistant-trigger:hover{background:#0b3a52}.advper-assistant-symbol,.advper-assistant-mark{display:grid;place-items:center;border-radius:50%;background:linear-gradient(145deg,#19c6b3,#1474d4);color:#fff;font-weight:800}.advper-assistant-symbol{width:22px;height:22px;font-size:12px}.advper-assistant-panel{width:min(360px,calc(100vw - 24px));overflow:hidden;border:1px solid #cbdbe4;border-radius:10px;background:#fff;box-shadow:0 18px 50px rgba(3,30,45,.24);color:#1f2937}.advper-assistant-panel header{display:grid;grid-template-columns:34px 1fr 28px;align-items:center;gap:9px;background:#082b40;padding:10px;color:#fff}.advper-assistant-mark{width:34px;height:34px}.advper-assistant-panel header strong,.advper-assistant-panel header span{display:block}.advper-assistant-panel header strong{font-size:13px}.advper-assistant-panel header span{color:#9fd9d2;font-size:10px}.advper-assistant-panel header button{border:0;background:transparent;color:#d9edf0;font-size:22px;cursor:pointer}.advper-assistant-body{max-height:300px;overflow:auto;padding:12px;background:#f5f9fb;font-size:12px;line-height:1.55}.advper-assistant-body>p{margin:0;color:#526475}.advper-assistant-body .is-answer,.advper-assistant-body .is-error{margin-top:10px;white-space:pre-line;border-radius:7px;background:#fff;padding:10px;border:1px solid #dbe7ec}.advper-assistant-body .is-error{border-color:#fecaca;color:#b91c1c}.advper-assistant-panel form{display:grid;grid-template-columns:1fr auto;gap:7px;padding:9px;border-top:1px solid #dbe7ec}.advper-assistant-panel input{min-width:0;border:1px solid #cbd5e1;border-radius:6px;padding:8px 9px;font-size:12px;outline:none}.advper-assistant-panel input:focus{border-color:#19a99a;box-shadow:0 0 0 2px rgba(25,198,179,.14)}.advper-assistant-panel form button{border:0;border-radius:6px;background:#1474d4;color:#fff;padding:0 12px;font-size:11px;font-weight:700;cursor:pointer}.advper-assistant-panel form button:disabled{opacity:.6}@media(max-width:640px){.advper-assistant-widget{right:10px;bottom:10px}.advper-assistant-trigger span:last-child{display:none}.advper-assistant-trigger{padding:7px}}
+</style>
 </head>
 <body>
   <header class="topbar">
@@ -2160,6 +2164,37 @@
         submitButton.textContent = 'Registrar solicitud';
       }
     });
+  </script>
+<div class="advper-assistant-widget" id="advperAssistantWidget">
+    <section aria-label="Asistente ADVPER IA" class="advper-assistant-panel" id="advperAssistantPanel" hidden>
+      <header><div class="advper-assistant-mark">A</div><div><strong>ADVPER IA</strong><span>Asistente matriz</span></div><button aria-label="Cerrar ADVPER IA" id="advperAssistantClose" type="button">×</button></header>
+      <div class="advper-assistant-body"><p>Consulta nuestros servicios o continúa de forma segura con ADVPER IA.</p></div>
+      <form id="advperAssistantForm"><input aria-label="Pregunta para ADVPER IA" id="advperAssistantInput" placeholder="¿En qué te ayudo?"><button type="submit">Consultar</button></form>
+    </section>
+    <button aria-expanded="false" class="advper-assistant-trigger" id="advperAssistantTrigger" type="button"><span class="advper-assistant-symbol">A</span><span>Preguntar a ADVPER IA</span></button>
+  </div>
+  <script>
+    (() => {
+      const panel = document.getElementById('advperAssistantPanel');
+      const trigger = document.getElementById('advperAssistantTrigger');
+      const close = document.getElementById('advperAssistantClose');
+      const form = document.getElementById('advperAssistantForm');
+      const input = document.getElementById('advperAssistantInput');
+      const setOpen = (open) => { panel.hidden = !open; trigger.setAttribute('aria-expanded', String(open)); if (open) input.focus(); };
+      trigger.addEventListener('click', () => setOpen(panel.hidden));
+      close.addEventListener('click', () => setOpen(false));
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const query = input.value.trim();
+        if (!query) return;
+        const target = new URL('https://advper.advper.cloud/');
+        target.searchParams.set('view', 'knowledge');
+        target.searchParams.set('ask', query);
+        target.searchParams.set('platform', 'ADVPER_LANDING');
+        target.searchParams.set('purpose', 'COMMERCIAL_SUPPORT');
+        window.open(target.toString(), '_blank', 'noopener,noreferrer');
+      });
+    })();
   </script>
 </body>
 </html>
