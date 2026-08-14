@@ -2169,73 +2169,27 @@
       }
     });
   </script>
+<style>
+.advper-assistant-panel.is-shared{width:min(440px,calc(100vw - 24px));height:min(700px,calc(100vh - 92px));overflow:hidden;border-radius:16px}.advper-assistant-panel.is-shared iframe{display:block;width:100%;height:100%;border:0;background:#f5f9fb}@media(max-width:640px){.advper-assistant-panel.is-shared{position:fixed;inset:10px 10px 70px;width:auto;height:auto}}
+</style>
 <div class="advper-assistant-widget" id="advperAssistantWidget">
-    <section aria-label="Asistente ADVPER IA" class="advper-assistant-panel" id="advperAssistantPanel" hidden>
-      <header><div class="advper-assistant-mark"><span class="advper-ai-glyph" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 5v8M16 19v8M5 16h8M19 16h8"/><path d="m9 9 4 4M19 19l4 4M23 9l-4 4M13 19l-4 4"/><circle cx="16" cy="16" r="3"/></svg></span></div><div><strong>ADVPER IA</strong><span>Asistente matriz</span></div><button aria-label="Cerrar ADVPER IA" id="advperAssistantClose" type="button">×</button></header>
-      <div class="advper-assistant-body" id="advperAssistantBody"></div>
-      <div class="advper-assistant-toolbar"><button id="advperAssistantVoice" type="button">Dictar</button><button id="advperAssistantRead" type="button">Escuchar</button><span id="advperAssistantStatus">ES · Listo</span></div>
-      <form id="advperAssistantForm"><input aria-label="Pregunta para ADVPER IA" id="advperAssistantInput" placeholder="¿En qué te ayudo?"><button type="submit">Consultar</button></form>
-    </section>
-    <button aria-expanded="false" class="advper-assistant-trigger" id="advperAssistantTrigger" type="button"><span class="advper-ai-glyph" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 5v8M16 19v8M5 16h8M19 16h8"/><path d="m9 9 4 4M19 19l4 4M23 9l-4 4M13 19l-4 4"/><circle cx="16" cy="16" r="3"/></svg></span><span>ADVPER IA</span></button>
-  </div>
-  <script>
-    (() => {
-      const panel = document.getElementById('advperAssistantPanel');
-      const trigger = document.getElementById('advperAssistantTrigger');
-      const close = document.getElementById('advperAssistantClose');
-      const form = document.getElementById('advperAssistantForm');
-      const input = document.getElementById('advperAssistantInput');
-      const body = document.getElementById('advperAssistantBody');
-      const voice = document.getElementById('advperAssistantVoice');
-      const read = document.getElementById('advperAssistantRead');
-      const assistantStatus = document.getElementById('advperAssistantStatus');
-      let lastResponse = '';
-      let visitorType = '';
-      let clientCode = '';
-      const choices = (items) => `<div class="advper-assistant-choices">${items.map(([label, value]) => `<button class="advper-assistant-choice" data-assistant-choice="${value}" type="button">${label}</button>`).join('')}</div>`;
-      const render = (title, message, extra = '') => { body.innerHTML = `<div class="advper-assistant-message"><strong>${title}</strong>${message}${extra}</div>`; };
-      const welcome = () => render('Hola, soy ADVPER IA.', 'Te ayudo de forma rápida y puntual. ¿Cómo deseas continuar?', choices([['Ya soy cliente','CLIENTE'],['Busco una solución','PROSPECTO'],['Conocer servicios','SERVICIOS']]));
-      const services = () => render('Soluciones ADVPER', 'Automatización con n8n, WhatsApp y web, CRM y tickets, plataformas internas, portales, analítica y asistentes de IA.', '<a class="advper-assistant-link" href="#diagnostico">Solicitar diagnóstico digital</a>');
-      const prospect = (query) => {
-        const q = query.toLowerCase();
-        if (/whatsapp|mensaje|bot|atenci[oó]n/.test(q)) return render('Ruta recomendada', 'Bot WhatsApp/Web con registro de leads, derivación humana y seguimiento.', '<a class="advper-assistant-link" href="#diagnostico">Iniciar diagnóstico</a>');
-        if (/venta|crm|cliente|cotiza|ticket|soporte/.test(q)) return render('Ruta recomendada', 'CRM o tickets para centralizar clientes, responsables, estados, evidencias y reportes.', '<a class="advper-assistant-link" href="#diagnostico">Evaluar necesidad</a>');
-        if (/automat|n8n|proceso|tarea/.test(q)) return render('Ruta recomendada', 'Automatización n8n para conectar herramientas, reducir tareas manuales y registrar errores.', '<a class="advper-assistant-link" href="#diagnostico">Evaluar proceso</a>');
-        if (/web|portal|plataforma|sistema/.test(q)) return render('Ruta recomendada', 'Web, portal o plataforma modular según usuarios, procesos, permisos y datos.', '<a class="advper-assistant-link" href="#diagnostico">Definir alcance</a>');
-        if (/ia|inteligencia|asistente|document/.test(q)) return render('Ruta recomendada', 'Asistente de IA con conocimiento gobernado, supervisión, permisos y evidencia.', '<a class="advper-assistant-link" href="#diagnostico">Solicitar diagnóstico</a>');
-        return render('Para orientarte mejor', 'Indica qué deseas resolver: atención, ventas, tareas manuales, reportes, documentos o una plataforma interna.', choices([['WhatsApp','Necesito automatizar WhatsApp'],['Ventas/CRM','Necesito ordenar ventas y clientes'],['Automatización','Quiero automatizar tareas'],['Plataforma','Necesito una plataforma interna']]));
-      };
-      const clientSupport = (query) => {
-        if (!clientCode) return render('Identificación de cliente', 'Escribe tu código de cliente o proyecto. No compartas contraseñas ni tokens.');
-        const q = query.toLowerCase();
-        if (/estado|avance|pendiente|bloque|arquitectura|flujo|m[oó]dulo/.test(q)) return render('Consulta protegida', `Código ${clientCode} registrado. Los avances, flujos y arquitectura requieren sesión autorizada para evitar mezclar clientes.`, '<a class="advper-assistant-link" href="https://advper.advper.cloud/?view=knowledge" target="_blank" rel="noopener noreferrer">Abrir Centro ADVPER seguro</a>');
-        return render('Soporte para cliente', `Código ${clientCode} registrado. Describe el módulo, pantalla y error exacto para indicarte la primera verificación y evidencia necesaria.`, choices([['No carga','La pantalla no carga'],['Error visible','Tengo un mensaje de error'],['Cómo funciona','Necesito saber cómo funciona un módulo']]));
-      };
-      const processQuery = (query) => {
-        const clean = query.trim(); if (!clean) return;
-        if (!visitorType && clean === 'CLIENTE') { visitorType = 'CLIENTE'; input.placeholder = 'Código de cliente o proyecto'; return render('Bienvenido, cliente ADVPER.', 'Indica tu código de cliente o proyecto. No ingreses datos sensibles.'); }
-        if (!visitorType && clean === 'PROSPECTO') { visitorType = 'PROSPECTO'; input.placeholder = 'Describe qué necesitas resolver'; return render('Busquemos la solución adecuada.', 'Cuéntame qué deseas mejorar o automatizar.', choices([['WhatsApp','Necesito automatizar WhatsApp'],['CRM','Necesito ordenar ventas y clientes'],['Procesos','Quiero automatizar tareas'],['Plataforma','Necesito una plataforma interna']])); }
-        if (!visitorType && clean === 'SERVICIOS') { visitorType = 'PROSPECTO'; return services(); }
-        if (!visitorType) { visitorType = 'PROSPECTO'; return prospect(clean); }
-        if (visitorType === 'CLIENTE' && !clientCode) { clientCode = clean.toUpperCase().replace(/[^A-Z0-9_-]/g, '').slice(0, 40); input.placeholder = 'Describe tu consulta de soporte'; return clientSupport(''); }
-        return visitorType === 'CLIENTE' ? clientSupport(clean) : prospect(clean);
-      };
-      const setOpen = (open) => { panel.hidden = !open; trigger.setAttribute('aria-expanded', String(open)); if (open) input.focus(); };
-      trigger.addEventListener('click', () => setOpen(panel.hidden));
-      close.addEventListener('click', () => setOpen(false));
-      body.addEventListener('click', (event) => { const button = event.target.closest('[data-assistant-choice]'); if (button) processQuery(button.dataset.assistantChoice); });
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const query = input.value.trim();
-        if (!query) return;
-        processQuery(query);
-        input.value = '';
-      });
-      voice.addEventListener('click', () => { const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition; if (!Recognition) { assistantStatus.textContent = 'Dictado no disponible'; return; } const recognition = new Recognition(); recognition.lang = 'es-PE'; recognition.continuous = false; recognition.interimResults = false; assistantStatus.textContent = 'Escuchando...'; recognition.onresult = (event) => { input.value = event.results[0][0].transcript; assistantStatus.textContent = 'ES · Listo'; input.focus(); }; recognition.onerror = () => assistantStatus.textContent = 'No pude escuchar'; recognition.onend = () => { if (assistantStatus.textContent === 'Escuchando...') assistantStatus.textContent = 'ES · Listo'; }; recognition.start(); });
-      read.addEventListener('click', () => { const text = body.textContent || ''; if (!text || !('speechSynthesis' in window)) return; window.speechSynthesis.cancel(); const speech = new SpeechSynthesisUtterance(text); speech.lang = 'es-PE'; speech.rate = 1.02; speech.pitch = 1; window.speechSynthesis.speak(speech); });
-      welcome();
-    })();
-  </script>
+  <section aria-label="Asistente central ADVPER IA" class="advper-assistant-panel is-shared" id="advperAssistantPanel" hidden>
+    <iframe allow="microphone; autoplay" referrerpolicy="strict-origin-when-cross-origin" src="https://advper.advper.cloud/embed/assistant?platform=LANDING" title="ADVPER IA"></iframe>
+  </section>
+  <button aria-expanded="false" class="advper-assistant-trigger" id="advperAssistantTrigger" type="button"><span class="advper-ai-glyph" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 5v8M16 19v8M5 16h8M19 16h8"/><path d="m9 9 4 4M19 19l4 4M23 9l-4 4M13 19l-4 4"/><circle cx="16" cy="16" r="3"/></svg></span><span>ADVPER IA</span></button>
+</div>
+<script>
+  (() => {
+    const panel = document.getElementById('advperAssistantPanel');
+    const trigger = document.getElementById('advperAssistantTrigger');
+    trigger.addEventListener('click', () => {
+      const opening = panel.hidden;
+      panel.hidden = !opening;
+      trigger.setAttribute('aria-expanded', String(opening));
+    });
+  })();
+</script>
+
 </body>
 </html>
 
