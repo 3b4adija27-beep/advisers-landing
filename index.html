@@ -1325,6 +1325,7 @@
 /* ADVPER IA suite assistant */
 .advper-assistant-widget{position:fixed;right:16px;bottom:16px;z-index:1000;display:flex;flex-direction:column;align-items:flex-end;gap:8px;font-family:Inter,ui-sans-serif,system-ui,sans-serif}.advper-assistant-trigger{display:flex;align-items:center;gap:8px;border:1px solid #19c6b3;border-radius:999px;background:#082b40;color:#fff;padding:7px 12px 7px 7px;box-shadow:0 10px 26px rgba(3,30,45,.2);font-size:12px;font-weight:700;cursor:pointer}.advper-assistant-trigger:hover{background:#0b3a52}.advper-assistant-symbol,.advper-assistant-mark{display:grid;place-items:center;border-radius:50%;background:linear-gradient(145deg,#19c6b3,#1474d4);color:#fff;font-weight:800}.advper-assistant-symbol{width:22px;height:22px;font-size:12px}.advper-assistant-panel{width:min(360px,calc(100vw - 24px));overflow:hidden;border:1px solid #cbdbe4;border-radius:10px;background:#fff;box-shadow:0 18px 50px rgba(3,30,45,.24);color:#1f2937}.advper-assistant-panel header{display:grid;grid-template-columns:34px 1fr 28px;align-items:center;gap:9px;background:#082b40;padding:10px;color:#fff}.advper-assistant-mark{width:34px;height:34px}.advper-assistant-panel header strong,.advper-assistant-panel header span{display:block}.advper-assistant-panel header strong{font-size:13px}.advper-assistant-panel header span{color:#9fd9d2;font-size:10px}.advper-assistant-panel header button{border:0;background:transparent;color:#d9edf0;font-size:22px;cursor:pointer}.advper-assistant-body{max-height:300px;overflow:auto;padding:12px;background:#f5f9fb;font-size:12px;line-height:1.55}.advper-assistant-body>p{margin:0;color:#526475}.advper-assistant-body .is-answer,.advper-assistant-body .is-error{margin-top:10px;white-space:pre-line;border-radius:7px;background:#fff;padding:10px;border:1px solid #dbe7ec}.advper-assistant-body .is-error{border-color:#fecaca;color:#b91c1c}.advper-assistant-panel form{display:grid;grid-template-columns:1fr auto;gap:7px;padding:9px;border-top:1px solid #dbe7ec}.advper-assistant-panel input{min-width:0;border:1px solid #cbd5e1;border-radius:6px;padding:8px 9px;font-size:12px;outline:none}.advper-assistant-panel input:focus{border-color:#19a99a;box-shadow:0 0 0 2px rgba(25,198,179,.14)}.advper-assistant-panel form button{border:0;border-radius:6px;background:#1474d4;color:#fff;padding:0 12px;font-size:11px;font-weight:700;cursor:pointer}.advper-assistant-panel form button:disabled{opacity:.6}@media(max-width:640px){.advper-assistant-widget{right:10px;bottom:10px}.advper-assistant-trigger span:last-child{display:none}.advper-assistant-trigger{padding:7px}}
 .advper-ai-glyph{position:relative;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#071d2b;isolation:isolate}.advper-ai-glyph:before{content:"";position:absolute;inset:-2px;border-radius:inherit;background:conic-gradient(from 20deg,#20d4bd,#1777e5,#8b5cf6,#20d4bd);z-index:-1}.advper-ai-glyph svg{width:17px;height:17px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round}.advper-ai-glyph svg circle{fill:#20d4bd;stroke:none}.advper-assistant-trigger:hover .advper-ai-glyph:before,.advper-assistant-mark:hover .advper-ai-glyph:before{animation:advper-orbit .9s linear infinite}.advper-assistant-mark{background:transparent}.advper-assistant-handoff{display:block;margin-top:9px;border-radius:7px;background:#1474d4;color:#fff!important;padding:8px 10px;text-align:center;font-weight:700;text-decoration:none}@keyframes advper-orbit{to{transform:rotate(360deg)}}
+.advper-assistant-choices{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.advper-assistant-choice{border:1px solid #9ccad1;border-radius:999px;background:#fff;color:#07546a;padding:6px 9px;font-size:11px;font-weight:700;cursor:pointer}.advper-assistant-choice:hover{border-color:#16b8a6;background:#eafbf8}.advper-assistant-message{margin-top:8px;border:1px solid #dbe7ec;border-radius:8px;background:#fff;padding:9px;color:#334155}.advper-assistant-message strong{display:block;margin-bottom:3px;color:#082b40}.advper-assistant-link{display:inline-block;margin-top:7px;color:#0873c9;font-weight:700;text-decoration:none}
 </style>
 </head>
 <body>
@@ -2169,7 +2170,7 @@
 <div class="advper-assistant-widget" id="advperAssistantWidget">
     <section aria-label="Asistente ADVPER IA" class="advper-assistant-panel" id="advperAssistantPanel" hidden>
       <header><div class="advper-assistant-mark"><span class="advper-ai-glyph" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 5v8M16 19v8M5 16h8M19 16h8"/><path d="m9 9 4 4M19 19l4 4M23 9l-4 4M13 19l-4 4"/><circle cx="16" cy="16" r="3"/></svg></span></div><div><strong>ADVPER IA</strong><span>Asistente matriz</span></div><button aria-label="Cerrar ADVPER IA" id="advperAssistantClose" type="button">×</button></header>
-      <div class="advper-assistant-body"><p>Consulta nuestros servicios o continúa de forma segura con ADVPER IA.</p></div>
+      <div class="advper-assistant-body" id="advperAssistantBody"></div>
       <form id="advperAssistantForm"><input aria-label="Pregunta para ADVPER IA" id="advperAssistantInput" placeholder="¿En qué te ayudo?"><button type="submit">Consultar</button></form>
     </section>
     <button aria-expanded="false" class="advper-assistant-trigger" id="advperAssistantTrigger" type="button"><span class="advper-ai-glyph" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 5v8M16 19v8M5 16h8M19 16h8"/><path d="m9 9 4 4M19 19l4 4M23 9l-4 4M13 19l-4 4"/><circle cx="16" cy="16" r="3"/></svg></span><span>ADVPER IA</span></button>
@@ -2181,22 +2182,49 @@
       const close = document.getElementById('advperAssistantClose');
       const form = document.getElementById('advperAssistantForm');
       const input = document.getElementById('advperAssistantInput');
+      const body = document.getElementById('advperAssistantBody');
+      let visitorType = '';
+      let clientCode = '';
+      const choices = (items) => `<div class="advper-assistant-choices">${items.map(([label, value]) => `<button class="advper-assistant-choice" data-assistant-choice="${value}" type="button">${label}</button>`).join('')}</div>`;
+      const render = (title, message, extra = '') => { body.innerHTML = `<div class="advper-assistant-message"><strong>${title}</strong>${message}${extra}</div>`; };
+      const welcome = () => render('Hola, soy ADVPER IA.', 'Te ayudo de forma rápida y puntual. ¿Cómo deseas continuar?', choices([['Ya soy cliente','CLIENTE'],['Busco una solución','PROSPECTO'],['Conocer servicios','SERVICIOS']]));
+      const services = () => render('Soluciones ADVPER', 'Automatización con n8n, WhatsApp y web, CRM y tickets, plataformas internas, portales, analítica y asistentes de IA.', '<a class="advper-assistant-link" href="#diagnostico">Solicitar diagnóstico digital</a>');
+      const prospect = (query) => {
+        const q = query.toLowerCase();
+        if (/whatsapp|mensaje|bot|atenci[oó]n/.test(q)) return render('Ruta recomendada', 'Bot WhatsApp/Web con registro de leads, derivación humana y seguimiento.', '<a class="advper-assistant-link" href="#diagnostico">Iniciar diagnóstico</a>');
+        if (/venta|crm|cliente|cotiza|ticket|soporte/.test(q)) return render('Ruta recomendada', 'CRM o tickets para centralizar clientes, responsables, estados, evidencias y reportes.', '<a class="advper-assistant-link" href="#diagnostico">Evaluar necesidad</a>');
+        if (/automat|n8n|proceso|tarea/.test(q)) return render('Ruta recomendada', 'Automatización n8n para conectar herramientas, reducir tareas manuales y registrar errores.', '<a class="advper-assistant-link" href="#diagnostico">Evaluar proceso</a>');
+        if (/web|portal|plataforma|sistema/.test(q)) return render('Ruta recomendada', 'Web, portal o plataforma modular según usuarios, procesos, permisos y datos.', '<a class="advper-assistant-link" href="#diagnostico">Definir alcance</a>');
+        if (/ia|inteligencia|asistente|document/.test(q)) return render('Ruta recomendada', 'Asistente de IA con conocimiento gobernado, supervisión, permisos y evidencia.', '<a class="advper-assistant-link" href="#diagnostico">Solicitar diagnóstico</a>');
+        return render('Para orientarte mejor', 'Indica qué deseas resolver: atención, ventas, tareas manuales, reportes, documentos o una plataforma interna.', choices([['WhatsApp','Necesito automatizar WhatsApp'],['Ventas/CRM','Necesito ordenar ventas y clientes'],['Automatización','Quiero automatizar tareas'],['Plataforma','Necesito una plataforma interna']]));
+      };
+      const clientSupport = (query) => {
+        if (!clientCode) return render('Identificación de cliente', 'Escribe tu código de cliente o proyecto. No compartas contraseñas ni tokens.');
+        const q = query.toLowerCase();
+        if (/estado|avance|pendiente|bloque|arquitectura|flujo|m[oó]dulo/.test(q)) return render('Consulta protegida', `Código ${clientCode} registrado. Los avances, flujos y arquitectura requieren sesión autorizada para evitar mezclar clientes.`, '<a class="advper-assistant-link" href="https://advper.advper.cloud/?view=knowledge" target="_blank" rel="noopener noreferrer">Abrir Centro ADVPER seguro</a>');
+        return render('Soporte para cliente', `Código ${clientCode} registrado. Describe el módulo, pantalla y error exacto para indicarte la primera verificación y evidencia necesaria.`, choices([['No carga','La pantalla no carga'],['Error visible','Tengo un mensaje de error'],['Cómo funciona','Necesito saber cómo funciona un módulo']]));
+      };
+      const processQuery = (query) => {
+        const clean = query.trim(); if (!clean) return;
+        if (!visitorType && clean === 'CLIENTE') { visitorType = 'CLIENTE'; input.placeholder = 'Código de cliente o proyecto'; return render('Bienvenido, cliente ADVPER.', 'Indica tu código de cliente o proyecto. No ingreses datos sensibles.'); }
+        if (!visitorType && clean === 'PROSPECTO') { visitorType = 'PROSPECTO'; input.placeholder = 'Describe qué necesitas resolver'; return render('Busquemos la solución adecuada.', 'Cuéntame qué deseas mejorar o automatizar.', choices([['WhatsApp','Necesito automatizar WhatsApp'],['CRM','Necesito ordenar ventas y clientes'],['Procesos','Quiero automatizar tareas'],['Plataforma','Necesito una plataforma interna']])); }
+        if (!visitorType && clean === 'SERVICIOS') { visitorType = 'PROSPECTO'; return services(); }
+        if (!visitorType) { visitorType = 'PROSPECTO'; return prospect(clean); }
+        if (visitorType === 'CLIENTE' && !clientCode) { clientCode = clean.toUpperCase().replace(/[^A-Z0-9_-]/g, '').slice(0, 40); input.placeholder = 'Describe tu consulta de soporte'; return clientSupport(''); }
+        return visitorType === 'CLIENTE' ? clientSupport(clean) : prospect(clean);
+      };
       const setOpen = (open) => { panel.hidden = !open; trigger.setAttribute('aria-expanded', String(open)); if (open) input.focus(); };
       trigger.addEventListener('click', () => setOpen(panel.hidden));
       close.addEventListener('click', () => setOpen(false));
+      body.addEventListener('click', (event) => { const button = event.target.closest('[data-assistant-choice]'); if (button) processQuery(button.dataset.assistantChoice); });
       form.addEventListener('submit', (event) => {
         event.preventDefault();
         const query = input.value.trim();
         if (!query) return;
-        const target = new URL('https://advper.advper.cloud/');
-        target.searchParams.set('view', 'knowledge');
-        target.searchParams.set('ask', query);
-        target.searchParams.set('platform', 'ADVPER_LANDING');
-        target.searchParams.set('purpose', 'COMMERCIAL_SUPPORT');
-        const body = panel.querySelector('.advper-assistant-body');
-        body.innerHTML = '<p>Tengo tu consulta preparada. Para proteger el conocimiento empresarial, la respuesta completa requiere tu sesión segura de ADVPER.</p><a class="advper-assistant-handoff" target="_blank" rel="noopener noreferrer">Continuar consulta en ADVPER</a>';
-        body.querySelector('a').href = target.toString();
+        processQuery(query);
+        input.value = '';
       });
+      welcome();
     })();
   </script>
 </body>
