@@ -59,7 +59,10 @@ footer .foot { align-items: center; gap: 24px; }
 .advper-assistant-trigger { background: var(--navy); border-color: #008879; min-height: 44px; }
 .advper-assistant-trigger:hover { background: #073958; }
 .advper-ai-glyph:before { background: conic-gradient(from 20deg,#008879,#02244a,#72d7c0,#008879); }
-.advper-assistant-trigger:hover .advper-ai-glyph:before { animation: none; }
+#advperAssistantTrigger .advper-ai-glyph:before { animation: advper-orbit 6s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  #advperAssistantTrigger .advper-ai-glyph:before { animation: none; }
+}
 @media(max-width: 1100px) { .brand-text { display: none; } .nav { gap: 12px; } }
 @media(max-width: 640px) {
   html { scroll-padding-top: 100px; }

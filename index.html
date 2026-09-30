@@ -2231,18 +2231,26 @@
   <section aria-label="Asistente central ADVPER IA" class="advper-assistant-panel is-shared" id="advperAssistantPanel" hidden>
     <iframe allow="microphone" referrerpolicy="strict-origin-when-cross-origin" data-src="https://advper.advper.cloud/embed/assistant?platform=LANDING" title="ADVPER IA"></iframe>
   </section>
-  <button aria-expanded="false" class="advper-assistant-trigger" id="advperAssistantTrigger" type="button"><span class="advper-ai-glyph" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 5v8M16 19v8M5 16h8M19 16h8"/><path d="m9 9 4 4M19 19l4 4M23 9l-4 4M13 19l-4 4"/><circle cx="16" cy="16" r="3"/></svg></span><span>ADVPER IA</span></button>
+  <button aria-expanded="false" aria-controls="advperAssistantPanel" class="advper-assistant-trigger" id="advperAssistantTrigger" type="button"><span class="advper-ai-glyph" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 5v8M16 19v8M5 16h8M19 16h8"/><path d="m9 9 4 4M19 19l4 4M23 9l-4 4M13 19l-4 4"/><circle cx="16" cy="16" r="3"/></svg></span><span>ADVPER IA</span></button>
 </div>
 <script>
   (() => {
     const panel = document.getElementById('advperAssistantPanel');
     const trigger = document.getElementById('advperAssistantTrigger');
-    trigger.addEventListener('click', () => {
-      const opening = panel.hidden;
+    const widget = document.getElementById('advperAssistantWidget');
+    const setOpen = opening => {
       const frame = panel.querySelector('iframe');
       if (opening && !frame.getAttribute('src')) frame.src = frame.dataset.src;
       panel.hidden = !opening;
       trigger.setAttribute('aria-expanded', String(opening));
+    };
+    trigger.addEventListener('click', () => setOpen(panel.hidden));
+    document.addEventListener('click', event => {
+      if (panel.hidden || event.composedPath().includes(widget)) return;
+      // Topic buttons open the same panel; they must not also dismiss it.
+      if (event.target instanceof Element && event.target.closest('[data-assistant-topic]')) return;
+      // Hide only: preserve the iframe, conversation and the newly clicked control's focus.
+      setOpen(false);
     });
   })();
 </script>
