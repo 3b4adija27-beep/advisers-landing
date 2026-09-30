@@ -1,4 +1,21 @@
-# ADVISERS PERU Web v0.1.5
+# ADVPER — Landing pública
+
+## Versión visual del 30/09/2026
+
+- Portada y páginas interiores con logo SVG oficial, paleta ADVPER y tipografía coherente.
+- Imagen conceptual creada para ADVPER, optimizada en WebP, y recursos vectoriales reutilizados.
+- Secciones de soluciones, método, empresa, suite y análisis editorial; detalles accesibles por teclado.
+- Selección directa ES / EN / QU. Inglés y quechua son presentaciones informativas; la propuesta en quechua sureño declara su revisión lingüística pendiente.
+- ADVPER Management disponible; el acceso se solicita hasta confirmar su URL de inicio de sesión.
+- El asistente conserva el iframe compartido y carga solo al abrirlo.
+- El formulario y su script de negocio se mantienen sin cambios.
+- El Dockerfile incluye las cinco páginas y los recursos locales. El PNG maestro y las fotografías sustituidas se excluyen del contenedor con .dockerignore.
+
+La infraestructura vigente sigue siendo GitHub + EasyPanel, servicio advisers-landing-web, puerto 80. No se cambia DNS, permisos ni aplicaciones privadas.
+
+## Historial técnico de versiones anteriores
+
+El contenido siguiente conserva información histórica. Las descripciones visuales antiguas —imágenes incrustadas, tamaño del logo y marcadores sociales— quedan sustituidas por la versión indicada arriba.
 
 Web pública oficial de ADVISERS PERU para presentar servicios, metodología, arquitectura y proyectos, y captar solicitudes de diagnóstico digital.
 

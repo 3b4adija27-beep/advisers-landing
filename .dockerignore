@@ -1,0 +1,6 @@
+.git
+outputs/
+# Original generation is retained locally; the page uses the optimized WebP.
+assets/brand/advper-suite-original.png
+# Replaced stock images are not part of this public release.
+assets/editorial/
