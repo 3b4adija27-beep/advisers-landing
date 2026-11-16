@@ -193,14 +193,14 @@ body.dialog-is-open { overflow: hidden; }
 .footer-social strong { color: #fff; font-size: 14px; }
 .footer-social small { display: block; color: #ccdde9; font-size: 11px; margin-top: 9px; }
 .social-icons { display: flex; gap: 8px; margin-top: 12px; }
-.social-icons button { width: 44px; height: 44px; border: 1px solid #618599; border-radius: 10px; background: #ffffff09; color: #fff; font: 750 22px 'Segoe UI',sans-serif; display: grid; place-items: center; cursor: pointer; }
-.social-icons button:is(:hover,:focus-visible) { background: #e6f4ef; color: var(--navy); border-color: #e6f4ef; transform: translateY(-2px); }
+.social-icons :is(button,a) { width: 44px; height: 44px; border: 1px solid #618599; border-radius: 10px; background: #ffffff09; color: #fff; font: 750 22px 'Segoe UI',sans-serif; display: grid; place-items: center; cursor: pointer; text-decoration: none; }
+.social-icons :is(button,a):is(:hover,:focus-visible) { background: #e6f4ef; color: var(--navy); border-color: #e6f4ef; transform: translateY(-2px); }
 .footer-base { width: min(1180px,calc(100% - 32px)); margin: 24px auto 0; padding-top: 20px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; border-top: 1px solid #ffffff24; color: #ccdde9; font-size: 12px; }
 .footer-base a:last-child { margin-left: auto; }
 .footer-base a:hover { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
-.btn,.nav-disclosure,.menu-card,.social-icons button,.dialog-close,.detail-link,.link-arrow { transition: background-color 180ms,border-color 180ms,color 180ms,transform 180ms,box-shadow 180ms; }
+.btn,.nav-disclosure,.menu-card,.social-icons :is(button,a),.dialog-close,.detail-link,.link-arrow { transition: background-color 180ms,border-color 180ms,color 180ms,transform 180ms,box-shadow 180ms; }
 .btn:is(:hover,:focus-visible) { transform: translateY(-2px); box-shadow: 0 10px 22px #02244a24; }
-.btn:active,.social-icons button:active { transform: translateY(0); }
+.btn:active,.social-icons :is(button,a):active { transform: translateY(0); }
 .detail-link:is(:hover,:focus-visible) { color: #08533c; text-decoration: underline; text-underline-offset: 5px; }
 .card:has(.detail-link):is(:hover,:focus-within) { border-color: #91bdae; box-shadow: 0 12px 30px #02244a0b; }
 .faq-wrap summary:hover { background: #f0f7f5; color: #08533c; border-radius: 10px; }
@@ -231,7 +231,7 @@ body.dialog-is-open { overflow: hidden; }
   .footer-base a:last-child { margin-left: 0; }
 }
 @media(prefers-reduced-motion:reduce) {
-  .btn:is(:hover,:focus-visible),.social-icons button:is(:hover,:focus-visible),.menu-card:is(:hover,:focus-visible) .link-arrow { transform: none; }
+  .btn:is(:hover,:focus-visible),.social-icons :is(button,a):is(:hover,:focus-visible),.menu-card:is(:hover,:focus-visible) .link-arrow { transform: none; }
 }
 @media(max-width:640px) {
   .nav-actions .btn-whatsapp { display: none; }

@@ -57,8 +57,8 @@ footer .foot{align-items:flex-start;display:grid;grid-template-columns:100px min
 .footer-directory>div{display:flex;flex-direction:column;align-items:flex-start;gap:9px}.footer-directory strong{color:#fff;font-size:13px;margin-bottom:6px}
 .footer-directory a,.footer-directory button{color:#c7e1db;font:13px/1.5 'Segoe UI',sans-serif;text-decoration:none;border:0;padding:0;background:none;cursor:pointer;text-align:left}
 .footer-directory :is(a,button):hover{color:#fff;text-decoration:underline;text-underline-offset:4px}
-.social-icons{display:grid;grid-template-columns:repeat(3,40px);gap:8px}.social-icons button{width:40px;height:40px}
-.social-icons button:is(:hover,:focus-visible){background:var(--brand-green);color:#fff}.footer-social small{max-width:148px;line-height:1.5}
+.social-icons{display:grid;grid-template-columns:repeat(3,40px);gap:8px}.social-icons :is(button,a){width:40px;height:40px}
+.social-icons :is(button,a):is(:hover,:focus-visible){background:var(--brand-green);color:#fff}.footer-social small{max-width:148px;line-height:1.5}
 .public-document{font-size:16px;background:linear-gradient(140deg,#eaf4ef,#f6f8fa 65%)}.public-document main{max-width:1080px}
 .public-document main>section{padding:32px;border-top:3px solid #168a68;box-shadow:0 10px 26px #08533c05}
 .public-document h1{max-width:850px}.public-document h2{font-size:clamp(24px,2.5vw,32px)}.public-document h3{font-size:21px}
